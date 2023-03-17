@@ -13,17 +13,16 @@
         android:id="@+id/pattern_lock_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:aspectRatio="width_bias"
+        app:aspectRatio="match_width"
         android:visibility="visible"
-        app:aspectRatioEnabled="true"
         app:correctStateColor="#4CAF50"
         app:dotAnimationDuration="150"
-        app:dotCount="4"
+        app:patternLength="4"
         app:dotNormalSize="20dp"
         app:dotSelectedSize="40dp"
         app:normalStateColor="#32b6ce"
-        app:pathEndAnimationDuration="100"
-        app:pathWidth="10dp"
+        app:lineEndAnimationDuration="100"
+        app:lineWidth="10dp"
         app:wrongStateColor="#F44336" />
 
 

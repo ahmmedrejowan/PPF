@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:foregroundGravity="center"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
 
@@ -13,29 +13,28 @@
         android:id="@+id/pattern_lock_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:aspectRatio="match_width"
         android:visibility="visible"
+        app:aspectRatio="match_width"
         app:correctStateColor="#4CAF50"
         app:dotAnimationDuration="150"
-        app:patternLength="4"
         app:dotNormalSize="20dp"
         app:dotSelectedSize="40dp"
-        app:normalStateColor="#32b6ce"
         app:lineEndAnimationDuration="100"
         app:lineWidth="10dp"
+        app:normalStateColor="#32b6ce"
+        app:patternLength="3"
         app:wrongStateColor="#F44336" />
-
 
 
     <com.rejowan.ppf.IndicatorDots
         android:id="@+id/indicator_dots"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        app:dotSpacing="16dp"
-        app:indicatorLength="6"
         app:dotDiameter="12dp"
-        android:layout_height="wrap_content"/>
+        app:dotSpacing="16dp"
+        app:indicatorLength="6" />
 
 
     <com.rejowan.ppf.PinLockView
@@ -44,8 +43,8 @@
         android:layout_height="match_parent"
         android:layout_marginTop="10dp"
         app:keypadDeleteButtonPressedColor="#FF5722"
-        app:keypadTextColor="@color/black"
         app:keypadDeleteButtonSize="20dp"
+        app:keypadTextColor="@color/black"
         app:pinLength="6" />
 
 

@@ -8,41 +8,30 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.rejowan.ppf.PatternLockView;
+import com.rejowan.ppfdemo.databinding.ActivityMainBinding;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    ActivityMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-
-//        PatternLockView.Dot[][] dot1 = new PatternLockView.Dot[0][0];
-//        PatternLockView.Dot[][] dot2 = new PatternLockView.Dot[1][0];
-//        PatternLockView.Dot[][] dot3 = new PatternLockView.Dot[2][0];
-//        PatternLockView.Dot[][] dot4 = new PatternLockView.Dot[2][1];
-//
-//
-//
-//        List<PatternLockView.Dot[][]> pattern = new ArrayList<>();
-//        pattern.add(dot1);
-//        pattern.add(dot2);
-//        pattern.add(dot3);
-//        pattern.add(dot4);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
 
 
-
-        PatternLockView patternLockView = findViewById(R.id.pattern_lock_view);
-
-
-        patternLockView.setPattern(PatternLockView.PatternViewMode.AUTO_DRAW, stringToPattern(patternLockView, "0123"));
+        binding.pinLockView.attachIndicatorDots(binding.indicatorDots);
 
 
 
-        patternLockView.addPatternLockListener(new PatternLockView.PatternLockViewListener() {
+        binding.patternLockView.setPattern(PatternLockView.PatternViewMode.AUTO_DRAW, stringToPattern(binding.patternLockView, "0123"));
+
+        binding.patternLockView.addPatternLockListener(new PatternLockView.PatternLockViewListener() {
             @Override
             public void onStarted() {
 

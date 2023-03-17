@@ -14,15 +14,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:aspectRatio="width_bias"
+        android:visibility="gone"
         app:aspectRatioEnabled="true"
         app:correctStateColor="#4CAF50"
         app:dotAnimationDuration="150"
-        app:dotCount="3"
+        app:dotCount="4"
         app:dotNormalSize="20dp"
         app:dotSelectedSize="40dp"
         app:normalStateColor="#32b6ce"
         app:pathEndAnimationDuration="100"
-        app:pathWidth="5dp"
+        app:pathWidth="10dp"
         app:wrongStateColor="#F44336" />
 
 
@@ -31,16 +32,22 @@
         android:id="@+id/indicator_dots"
         android:layout_width="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        app:dotSpacing="16dp"
+        app:indicatorLength="6"
+        app:dotDiameter="12dp"
         android:layout_height="wrap_content"/>
 
 
     <com.rejowan.ppf.PinLockView
         android:id="@+id/pin_lock_view"
         android:layout_width="match_parent"
-        android:layout_gravity="center"
+        android:layout_height="300dp"
+        android:layout_marginTop="10dp"
+        app:keypadDeleteButtonPressedColor="#FF5722"
         app:keypadTextColor="@color/black"
-        android:layout_height="300dp" />
-
+        app:keypadDeleteButtonSize="20dp"
+        app:pinLength="6" />
 
 
 </LinearLayout>

@@ -1,15 +1,14 @@
 package com.rejowan.ppfdemo;
 
+import static com.rejowan.ppf.PatternLockView.stringToPattern;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
 
 import com.rejowan.ppf.PatternLockView;
-import com.rejowan.ppf.listener.PatternLockViewListener;
-import com.rejowan.ppf.utils.PatternLockUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,10 +38,11 @@ public class MainActivity extends AppCompatActivity {
         PatternLockView patternLockView = findViewById(R.id.pattern_lock_view);
 
 
-        patternLockView.setPattern(PatternLockView.PatternViewMode.AUTO_DRAW, PatternLockUtils.stringToPattern(patternLockView, "0123"));
+        patternLockView.setPattern(PatternLockView.PatternViewMode.AUTO_DRAW, stringToPattern(patternLockView, "0123"));
 
 
-        patternLockView.addPatternLockListener(new PatternLockViewListener() {
+
+        patternLockView.addPatternLockListener(new PatternLockView.PatternLockViewListener() {
             @Override
             public void onStarted() {
 

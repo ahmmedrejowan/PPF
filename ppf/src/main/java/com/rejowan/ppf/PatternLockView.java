@@ -9,7 +9,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Debug;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -18,84 +17,54 @@ import android.util.AttributeSet;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 
-
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DimenRes;
+import androidx.annotation.Dimension;
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.core.content.ContextCompat;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
-
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.Dimension;
-import androidx.annotation.IntDef;
-
-import com.rejowan.ppf.listener.PatternLockViewListener;
-import com.rejowan.ppf.utils.PatternLockUtils;
-import com.rejowan.ppf.utils.ResourceUtils;
-
-
+@SuppressWarnings("unused")
 public class PatternLockView extends View {
 
-    @IntDef({AspectRatio.ASPECT_RATIO_SQUARE, AspectRatio.ASPECT_RATIO_WIDTH_BIAS, AspectRatio.ASPECT_RATIO_HEIGHT_BIAS})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface AspectRatio {
-        int ASPECT_RATIO_SQUARE = 0;
-        int ASPECT_RATIO_WIDTH_BIAS = 1;
-        int ASPECT_RATIO_HEIGHT_BIAS = 2;
-    }
-
-
-    @IntDef({PatternViewMode.CORRECT, PatternViewMode.AUTO_DRAW, PatternViewMode.WRONG})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface PatternViewMode {
-
-        int CORRECT = 0;
-        /**
-         * Automatically draw the pattern for demo or tutorial purposes.
-         */
-        int AUTO_DRAW = 1;
-        /**
-         * This state represents a wrongly drawn pattern by the user. The color of the path and
-         * the dots both would be changed to this color.
-         * <p>
-         * (NOTE - Consider showing this state in an attention-seeking color)
-         */
-        int WRONG = 2;
-    }
-
+    private static final String UTF8 = "UTF-8";
+    private static final String SHA1 = "SHA-1";
+    private static final String MD5 = "MD5";
     private static final int DEFAULT_PATTERN_DOT_COUNT = 3;
     private static final boolean PROFILE_DRAWING = false;
 
-    /**
-     * The time (in millis) spend in animating each circle of a lock pattern if
-     * the animating mode is set. The entire animation should take this constant
-     * the length of the pattern to complete.
-     */
     private static final int MILLIS_PER_CIRCLE_ANIMATING = 700;
-
-    // Amount of time (in millis) spent to animate a dot
     private static final int DEFAULT_DOT_ANIMATION_DURATION = 190;
-    // Amount of time (in millis) spent to animate a path ends
     private static final int DEFAULT_PATH_END_ANIMATION_DURATION = 100;
-    // This can be used to avoid updating the display for very small motions or noisy panels
     private static final float DEFAULT_DRAG_THRESHOLD = 0.0f;
-
+    private static final Random RANDOM = new Random();
+    private static int sDotCount;
+    private final Path mCurrentPath = new Path();
+    private final Rect mInvalidate = new Rect();
+    private final Rect mTempInvalidateRect = new Rect();
+    private final float mHitFactor = 0.6f;
+    private final List<PatternLockViewListener> mPatternListeners;
     private DotState[][] mDotStates;
     private int mPatternSize;
     private boolean mDrawingProfilingStarted = false;
     private long mAnimatingPeriodStart;
-    private float mHitFactor = 0.6f;
-
-    // Made static so that the static inner class can use it
-    private static int sDotCount;
-
     private boolean mAspectRatioEnabled;
     private int mAspectRatio;
     private int mNormalStateColor;
@@ -106,38 +75,20 @@ public class PatternLockView extends View {
     private int mDotSelectedSize;
     private int mDotAnimationDuration;
     private int mPathEndAnimationDuration;
-
     private Paint mDotPaint;
     private Paint mPathPaint;
-
-    private List<PatternLockViewListener> mPatternListeners;
-    // The pattern represented as a list of connected {@link Dot}
     private ArrayList<Dot> mPattern;
 
-    /**
-     * Lookup table for the dots of the pattern we are currently drawing.
-     * This will be the dots of the complete pattern unless we are animating,
-     * in which case we use this to hold the dots we are drawing for the in
-     * progress animation.
-     */
     private boolean[][] mPatternDrawLookup;
-
     private float mInProgressX = -1;
     private float mInProgressY = -1;
-
     private int mPatternViewMode = PatternViewMode.CORRECT;
     private boolean mInputEnabled = true;
     private boolean mInStealthMode = false;
     private boolean mEnableHapticFeedback = true;
     private boolean mPatternInProgress = false;
-
     private float mViewWidth;
     private float mViewHeight;
-
-    private final Path mCurrentPath = new Path();
-    private final Rect mInvalidate = new Rect();
-    private final Rect mTempInvalidateRect = new Rect();
-
     private Interpolator mFastOutSlowInInterpolator;
     private Interpolator mLinearOutSlowInInterpolator;
 
@@ -157,18 +108,18 @@ public class PatternLockView extends View {
             mAspectRatio = typedArray.getInt(R.styleable.PatternLockView_aspectRatio,
                     AspectRatio.ASPECT_RATIO_SQUARE);
             mPathWidth = (int) typedArray.getDimension(R.styleable.PatternLockView_pathWidth,
-                    ResourceUtils.getDimensionInPx(getContext(), R.dimen.pattern_lock_path_width));
+                    getDimensionInPx(getContext(), R.dimen.pattern_lock_path_width));
             mNormalStateColor = typedArray.getColor(R.styleable.PatternLockView_normalStateColor,
-                    ResourceUtils.getColor(getContext(), R.color.white));
+                    getColor(getContext(), R.color.white));
             mCorrectStateColor = typedArray.getColor(R.styleable.PatternLockView_correctStateColor,
-                    ResourceUtils.getColor(getContext(), R.color.white));
+                    getColor(getContext(), R.color.white));
             mWrongStateColor = typedArray.getColor(R.styleable.PatternLockView_wrongStateColor,
-                    ResourceUtils.getColor(getContext(), R.color.pomegranate));
+                    getColor(getContext(), R.color.pomegranate));
             mDotNormalSize = (int) typedArray.getDimension(R.styleable.PatternLockView_dotNormalSize,
-                    ResourceUtils.getDimensionInPx(getContext(), R.dimen.pattern_lock_dot_size));
+                    getDimensionInPx(getContext(), R.dimen.pattern_lock_dot_size));
             mDotSelectedSize = (int) typedArray.getDimension(R.styleable
                             .PatternLockView_dotSelectedSize,
-                    ResourceUtils.getDimensionInPx(getContext(), R.dimen.pattern_lock_dot_selected_size));
+                    getDimensionInPx(getContext(), R.dimen.pattern_lock_dot_selected_size));
             mDotAnimationDuration = typedArray.getInt(R.styleable.PatternLockView_dotAnimationDuration,
                     DEFAULT_DOT_ANIMATION_DURATION);
             mPathEndAnimationDuration = typedArray.getInt(R.styleable.PatternLockView_pathEndAnimationDuration,
@@ -195,6 +146,231 @@ public class PatternLockView extends View {
         initView();
     }
 
+    public static String patternToString(PatternLockView patternLockView,
+                                         List<PatternLockView.Dot> pattern) {
+        if (pattern == null) {
+            return "";
+        }
+        int patternSize = pattern.size();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < patternSize; i++) {
+            PatternLockView.Dot dot = pattern.get(i);
+            stringBuilder.append((dot.getRow() * patternLockView.getDotCount() + dot.getColumn()));
+        }
+        return stringBuilder.toString();
+    }
+
+    public static List<PatternLockView.Dot> stringToPattern(PatternLockView patternLockView,
+                                                            String string) {
+        List<PatternLockView.Dot> result = new ArrayList<>();
+
+        for (int i = 0; i < string.length(); i++) {
+            int number = Character.getNumericValue(string.charAt(i));
+            result.add(PatternLockView.Dot.of(number / patternLockView.getDotCount(),
+                    number % patternLockView.getDotCount()));
+        }
+        return result;
+    }
+
+    public static String patternToSha1(PatternLockView patternLockView,
+                                       List<PatternLockView.Dot> pattern) {
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance(SHA1);
+            messageDigest.update(patternToString(patternLockView, pattern).getBytes(StandardCharsets.UTF_8));
+
+            byte[] digest = messageDigest.digest();
+            BigInteger bigInteger = new BigInteger(1, digest);
+            return String.format((Locale) null,
+                    "%0" + (digest.length * 2) + "x", bigInteger).toLowerCase();
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+    }
+
+
+    public static ArrayList<PatternLockView.Dot> generateRandomPattern(PatternLockView patternLockView,
+                                                                       int size)
+            throws IndexOutOfBoundsException {
+        if (patternLockView == null) {
+            throw new IllegalArgumentException("PatternLockView can not be null.");
+        }
+
+        if (size <= 0 || size > patternLockView.getDotCount()) {
+            throw new IndexOutOfBoundsException("Size must be in range [1, " +
+                    patternLockView.getDotCount() + "]");
+        }
+
+        List<Integer> usedIds = new ArrayList<>();
+        int lastId = randInt(patternLockView.getDotCount());
+        usedIds.add(lastId);
+
+        while (usedIds.size() < size) {
+            // We start from an empty matrix, so there's always a break point to
+            // exit this loop
+            final int lastRow = lastId / patternLockView.getDotCount();
+            final int lastCol = lastId % patternLockView.getDotCount();
+
+            // This is the max available rows/ columns that we can reach from
+            // the cell of `lastId` to the border of the matrix.
+            final int maxDistance = Math.max(
+                    Math.max(lastRow, patternLockView.getDotCount() - lastRow),
+                    Math.max(lastCol, patternLockView.getDotCount() - lastCol));
+
+            lastId = -1;
+
+            // Starting from `distance` = 1, find the closest-available
+            // neighbour value of the cell [lastRow, lastCol].
+            for (int distance = 1; distance <= maxDistance; distance++) {
+
+                // Now we have a square surrounding the current cell. We call it
+                // ABCD, in which A is top-left, and C is bottom-right.
+                final int rowA = lastRow - distance;
+                final int colA = lastCol - distance;
+                final int rowC = lastRow + distance;
+                final int colC = lastCol + distance;
+
+                int[] randomValues;
+
+                // Process randomly AB, BC, CD, and DA. Break the loop as soon
+                // as we find one value.
+                final int[] lines = randIntArray(4);
+                for (int line : lines) {
+                    switch (line) {
+                        case 0: {
+                            if (rowA >= 0) {
+                                randomValues = randIntArray(Math.max(0, colA),
+                                        Math.min(patternLockView.getDotCount(),
+                                                colC + 1));
+                                for (int c : randomValues) {
+                                    lastId = rowA * patternLockView.getDotCount()
+                                            + c;
+                                    if (usedIds.contains(lastId))
+                                        lastId = -1;
+                                    else
+                                        break;
+                                }
+                            }
+
+                            break;
+                        }
+
+                        case 1: {
+                            if (colC < patternLockView.getDotCount()) {
+                                randomValues = randIntArray(Math.max(0, rowA + 1),
+                                        Math.min(patternLockView.getDotCount(),
+                                                rowC + 1));
+                                for (int r : randomValues) {
+                                    lastId = r * patternLockView.getDotCount()
+                                            + colC;
+                                    if (usedIds.contains(lastId))
+                                        lastId = -1;
+                                    else
+                                        break;
+                                }
+                            }
+
+                            break;
+                        }
+
+                        case 2: {
+                            if (rowC < patternLockView.getDotCount()) {
+                                randomValues = randIntArray(Math.max(0, colA),
+                                        Math.min(patternLockView.getDotCount(),
+                                                colC));
+                                for (int c : randomValues) {
+                                    lastId = rowC * patternLockView.getDotCount()
+                                            + c;
+                                    if (usedIds.contains(lastId))
+                                        lastId = -1;
+                                    else
+                                        break;
+                                }
+                            }
+
+                            break;
+                        }
+
+                        case 3: {
+                            if (colA >= 0) {
+                                randomValues = randIntArray(Math.max(0, rowA + 1),
+                                        Math.min(patternLockView.getDotCount(),
+                                                rowC));
+                                for (int r : randomValues) {
+                                    lastId = r * patternLockView.getDotCount()
+                                            + colA;
+                                    if (usedIds.contains(lastId))
+                                        lastId = -1;
+                                    else
+                                        break;
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+
+                    if (lastId >= 0) break;
+                }
+
+                if (lastId >= 0) break;
+            }
+
+            usedIds.add(lastId);
+        }
+
+        ArrayList<PatternLockView.Dot> result = new ArrayList<>();
+        for (int id : usedIds) {
+            result.add(PatternLockView.Dot.of(id));
+        }
+
+        return result;
+    }
+
+    public static int randInt() {
+        return RANDOM.nextInt((int) (System.nanoTime() % Integer.MAX_VALUE));
+    }
+
+    public static int randInt(int max) {
+        return max > 0 ? randInt() % max : 0;
+    }
+
+    public static int[] randIntArray(int start, int end) {
+        if (end <= start) {
+            return new int[0];
+        }
+
+        final List<Integer> values = new ArrayList<>();
+        for (int i = start; i < end; i++) {
+            values.add(i);
+        }
+
+        final int[] result = new int[values.size()];
+        for (int i = 0; i < result.length; i++) {
+            int k = randInt(values.size());
+            result[i] = values.get(k);
+            values.remove(k);
+        }
+
+        return result;
+    }
+
+    public static int[] randIntArray(int end) {
+        return randIntArray(0, end);
+    }
+
+    public static int getColor(@NonNull Context context, @ColorRes int colorRes) {
+        return ContextCompat.getColor(context, colorRes);
+    }
+
+    public static String getString(@NonNull Context context, @StringRes int stringRes) {
+        return context.getString(stringRes);
+    }
+
+    public static float getDimensionInPx(@NonNull Context context, @DimenRes int dimenRes) {
+        return context.getResources().getDimension(dimenRes);
+    }
+
     private void initView() {
         setClickable(true);
 
@@ -211,8 +387,7 @@ public class PatternLockView extends View {
         mDotPaint.setAntiAlias(true);
         mDotPaint.setDither(true);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                && !isInEditMode()) {
+        if (!isInEditMode()) {
             mFastOutSlowInInterpolator = AnimationUtils.loadInterpolator(
                     getContext(), android.R.interpolator.fast_out_slow_in);
             mLinearOutSlowInInterpolator = AnimationUtils.loadInterpolator(
@@ -373,7 +548,7 @@ public class PatternLockView extends View {
     protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         return new SavedState(superState,
-                PatternLockUtils.patternToString(this, mPattern),
+                patternToString(this, mPattern),
                 mPatternViewMode, mInputEnabled, mInStealthMode,
                 mEnableHapticFeedback);
     }
@@ -383,7 +558,7 @@ public class PatternLockView extends View {
         final SavedState savedState = (SavedState) state;
         super.onRestoreInstanceState(savedState.getSuperState());
         setPattern(PatternViewMode.CORRECT,
-                PatternLockUtils.stringToPattern(this, savedState.getSerializedPattern()));
+                stringToPattern(this, savedState.getSerializedPattern()));
         mPatternViewMode = savedState.getDisplayMode();
         mInputEnabled = savedState.isInputEnabled();
         mInStealthMode = savedState.isInStealthMode();
@@ -411,6 +586,7 @@ public class PatternLockView extends View {
         }
         return super.onHoverEvent(event);
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -458,20 +634,60 @@ public class PatternLockView extends View {
         return mInStealthMode;
     }
 
+    /**
+     * Set whether the View is in stealth mode. If {@code true}, there will be
+     * no visible feedback (path drawing, dot animating, etc) as the user enters the pattern
+     */
+    public void setInStealthMode(boolean inStealthMode) {
+        mInStealthMode = inStealthMode;
+    }
+
     public boolean isTactileFeedbackEnabled() {
         return mEnableHapticFeedback;
+    }
+
+    public void setTactileFeedbackEnabled(boolean tactileFeedbackEnabled) {
+        mEnableHapticFeedback = tactileFeedbackEnabled;
     }
 
     public boolean isInputEnabled() {
         return mInputEnabled;
     }
 
+
+    public void setInputEnabled(boolean inputEnabled) {
+        mInputEnabled = inputEnabled;
+    }
+
     public int getDotCount() {
         return sDotCount;
     }
 
+    public void setDotCount(int dotCount) {
+        sDotCount = dotCount;
+        mPatternSize = sDotCount * sDotCount;
+        mPattern = new ArrayList<>(mPatternSize);
+        mPatternDrawLookup = new boolean[sDotCount][sDotCount];
+
+        mDotStates = new DotState[sDotCount][sDotCount];
+        for (int i = 0; i < sDotCount; i++) {
+            for (int j = 0; j < sDotCount; j++) {
+                mDotStates[i][j] = new DotState();
+                mDotStates[i][j].mSize = mDotNormalSize;
+            }
+        }
+
+        requestLayout();
+        invalidate();
+    }
+
     public boolean isAspectRatioEnabled() {
         return mAspectRatioEnabled;
+    }
+
+    public void setAspectRatioEnabled(boolean aspectRatioEnabled) {
+        mAspectRatioEnabled = aspectRatioEnabled;
+        requestLayout();
     }
 
     @AspectRatio
@@ -479,28 +695,69 @@ public class PatternLockView extends View {
         return mAspectRatio;
     }
 
+    public void setAspectRatio(@AspectRatio int aspectRatio) {
+        mAspectRatio = aspectRatio;
+        requestLayout();
+    }
+
     public int getNormalStateColor() {
         return mNormalStateColor;
+    }
+
+    public void setNormalStateColor(@ColorInt int normalStateColor) {
+        mNormalStateColor = normalStateColor;
     }
 
     public int getWrongStateColor() {
         return mWrongStateColor;
     }
 
+    public void setWrongStateColor(@ColorInt int wrongStateColor) {
+        mWrongStateColor = wrongStateColor;
+    }
+
     public int getCorrectStateColor() {
         return mCorrectStateColor;
+    }
+
+    public void setCorrectStateColor(@ColorInt int correctStateColor) {
+        mCorrectStateColor = correctStateColor;
     }
 
     public int getPathWidth() {
         return mPathWidth;
     }
 
+    public void setPathWidth(@Dimension int pathWidth) {
+        mPathWidth = pathWidth;
+
+        initView();
+        invalidate();
+    }
+
     public int getDotNormalSize() {
         return mDotNormalSize;
     }
 
+    public void setDotNormalSize(@Dimension int dotNormalSize) {
+        mDotNormalSize = dotNormalSize;
+
+        for (int i = 0; i < sDotCount; i++) {
+            for (int j = 0; j < sDotCount; j++) {
+                mDotStates[i][j] = new DotState();
+                mDotStates[i][j].mSize = mDotNormalSize;
+            }
+        }
+
+        invalidate();
+    }
+
     public int getDotSelectedSize() {
         return mDotSelectedSize;
+    }
+
+    public void setDotSelectedSize(@Dimension int dotSelectedSize) {
+        mDotSelectedSize = dotSelectedSize;
     }
 
     public int getPatternSize() {
@@ -511,10 +768,18 @@ public class PatternLockView extends View {
         return mDotAnimationDuration;
     }
 
+    public void setDotAnimationDuration(int dotAnimationDuration) {
+        mDotAnimationDuration = dotAnimationDuration;
+        invalidate();
+    }
+
     public int getPathEndAnimationDuration() {
         return mPathEndAnimationDuration;
     }
 
+    public void setPathEndAnimationDuration(int pathEndAnimationDuration) {
+        mPathEndAnimationDuration = pathEndAnimationDuration;
+    }
 
     public void setPattern(@PatternViewMode int patternViewMode, List<Dot> pattern) {
         mPattern.clear();
@@ -546,100 +811,6 @@ public class PatternLockView extends View {
             clearPatternDrawLookup();
         }
         invalidate();
-    }
-
-    public void setDotCount(int dotCount) {
-        sDotCount = dotCount;
-        mPatternSize = sDotCount * sDotCount;
-        mPattern = new ArrayList<>(mPatternSize);
-        mPatternDrawLookup = new boolean[sDotCount][sDotCount];
-
-        mDotStates = new DotState[sDotCount][sDotCount];
-        for (int i = 0; i < sDotCount; i++) {
-            for (int j = 0; j < sDotCount; j++) {
-                mDotStates[i][j] = new DotState();
-                mDotStates[i][j].mSize = mDotNormalSize;
-            }
-        }
-
-        requestLayout();
-        invalidate();
-    }
-
-    public void setAspectRatioEnabled(boolean aspectRatioEnabled) {
-        mAspectRatioEnabled = aspectRatioEnabled;
-        requestLayout();
-    }
-
-    public void setAspectRatio(@AspectRatio int aspectRatio) {
-        mAspectRatio = aspectRatio;
-        requestLayout();
-    }
-
-    public void setNormalStateColor(@ColorInt int normalStateColor) {
-        mNormalStateColor = normalStateColor;
-    }
-
-    public void setWrongStateColor(@ColorInt int wrongStateColor) {
-        mWrongStateColor = wrongStateColor;
-    }
-
-    public void setCorrectStateColor(@ColorInt int correctStateColor) {
-        mCorrectStateColor = correctStateColor;
-    }
-
-    public void setPathWidth(@Dimension int pathWidth) {
-        mPathWidth = pathWidth;
-
-        initView();
-        invalidate();
-    }
-
-    public void setDotNormalSize(@Dimension int dotNormalSize) {
-        mDotNormalSize = dotNormalSize;
-
-        for (int i = 0; i < sDotCount; i++) {
-            for (int j = 0; j < sDotCount; j++) {
-                mDotStates[i][j] = new DotState();
-                mDotStates[i][j].mSize = mDotNormalSize;
-            }
-        }
-
-        invalidate();
-    }
-
-    public void setDotSelectedSize(@Dimension int dotSelectedSize) {
-        mDotSelectedSize = dotSelectedSize;
-    }
-
-    public void setDotAnimationDuration(int dotAnimationDuration) {
-        mDotAnimationDuration = dotAnimationDuration;
-        invalidate();
-    }
-
-    public void setPathEndAnimationDuration(int pathEndAnimationDuration) {
-        mPathEndAnimationDuration = pathEndAnimationDuration;
-    }
-
-    /**
-     * Set whether the View is in stealth mode. If {@code true}, there will be
-     * no visible feedback (path drawing, dot animating, etc) as the user enters the pattern
-     */
-    public void setInStealthMode(boolean inStealthMode) {
-        mInStealthMode = inStealthMode;
-    }
-
-    public void setTactileFeedbackEnabled(boolean tactileFeedbackEnabled) {
-        mEnableHapticFeedback = tactileFeedbackEnabled;
-    }
-
-    /**
-     * Enabled/disables any user input of the view. This can be useful to lock the view temporarily
-     * while showing any message to the user so that the user cannot get the view in
-     * an unwanted state
-     */
-    public void setInputEnabled(boolean inputEnabled) {
-        mInputEnabled = inputEnabled;
     }
 
     public void setEnableHapticFeedback(boolean enableHapticFeedback) {
@@ -742,14 +913,7 @@ public class PatternLockView extends View {
         }
     }
 
-    /**
-     * Determines whether the point x, y will add a new point to the current
-     * pattern (in addition to finding the dot, also makes heuristic choices
-     * such as filling in gaps based on current pattern).
-     *
-     * @param x The x coordinate
-     * @param y The y coordinate
-     */
+
     private Dot detectAndAddHit(float x, float y) {
         final Dot dot = checkForNewHit(x, y);
         if (dot != null) {
@@ -802,14 +966,8 @@ public class PatternLockView extends View {
     private void startDotSelectedAnimation(Dot dot) {
         final DotState dotState = mDotStates[dot.mRow][dot.mColumn];
         startSizeAnimation(mDotNormalSize, mDotSelectedSize, mDotAnimationDuration,
-                mLinearOutSlowInInterpolator, dotState, new Runnable() {
-
-                    @Override
-                    public void run() {
-                        startSizeAnimation(mDotSelectedSize, mDotNormalSize, mDotAnimationDuration,
-                                mFastOutSlowInInterpolator, dotState, null);
-                    }
-                });
+                mLinearOutSlowInInterpolator, dotState, () -> startSizeAnimation(mDotSelectedSize, mDotNormalSize, mDotAnimationDuration,
+                        mFastOutSlowInInterpolator, dotState, null));
         startLineEndAnimation(dotState, mInProgressX, mInProgressY,
                 getCenterXForColumn(dot.mColumn), getCenterYForRow(dot.mRow));
     }
@@ -818,16 +976,11 @@ public class PatternLockView extends View {
                                        final float startX, final float startY, final float targetX,
                                        final float targetY) {
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float t = (Float) animation.getAnimatedValue();
-                state.mLineEndX = (1 - t) * startX + t * targetX;
-                state.mLineEndY = (1 - t) * startY + t * targetY;
-                invalidate();
-            }
-
+        valueAnimator.addUpdateListener(animation -> {
+            float t = (Float) animation.getAnimatedValue();
+            state.mLineEndX = (1 - t) * startX + t * targetX;
+            state.mLineEndY = (1 - t) * startY + t * targetY;
+            invalidate();
         });
         valueAnimator.addListener(new AnimatorListenerAdapter() {
 
@@ -847,23 +1000,16 @@ public class PatternLockView extends View {
                                     Interpolator interpolator, final DotState state,
                                     final Runnable endRunnable) {
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(start, end);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                state.mSize = (Float) animation.getAnimatedValue();
-                invalidate();
-            }
-
+        valueAnimator.addUpdateListener(animation -> {
+            state.mSize = (Float) animation.getAnimatedValue();
+            invalidate();
         });
         if (endRunnable != null) {
             valueAnimator.addListener(new AnimatorListenerAdapter() {
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    if (endRunnable != null) {
-                        endRunnable.run();
-                    }
+                    endRunnable.run();
                 }
             });
         }
@@ -872,13 +1018,7 @@ public class PatternLockView extends View {
         valueAnimator.start();
     }
 
-    /**
-     * Helper method to map a given x, y to its corresponding cell
-     *
-     * @param x The x coordinate
-     * @param y The y coordinate
-     * @return
-     */
+
     private Dot checkForNewHit(float x, float y) {
         final int rowHit = getRowHit(y);
         if (rowHit < 0) {
@@ -895,12 +1035,7 @@ public class PatternLockView extends View {
         return Dot.of(rowHit, columnHit);
     }
 
-    /**
-     * Helper method to find the row that y coordinate falls into
-     *
-     * @param y The y coordinate
-     * @return The mRow that y falls in, or -1 if it falls in no mRow
-     */
+
     private int getRowHit(float y) {
         final float squareHeight = mViewHeight;
         float hitSize = squareHeight * mHitFactor;
@@ -1005,13 +1140,7 @@ public class PatternLockView extends View {
     }
 
     private void sendAccessEvent(int resId) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            setContentDescription(getContext().getString(resId));
-            sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
-            setContentDescription(null);
-        } else {
-            announceForAccessibility(getContext().getString(resId));
-        }
+        announceForAccessibility(getContext().getString(resId));
     }
 
     private void handleActionUp(MotionEvent event) {
@@ -1114,14 +1243,65 @@ public class PatternLockView extends View {
         canvas.drawCircle(centerX, centerY, size / 2, mDotPaint);
     }
 
+
+    @IntDef({AspectRatio.ASPECT_RATIO_SQUARE, AspectRatio.ASPECT_RATIO_WIDTH_BIAS, AspectRatio.ASPECT_RATIO_HEIGHT_BIAS})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AspectRatio {
+        int ASPECT_RATIO_SQUARE = 0;
+        int ASPECT_RATIO_WIDTH_BIAS = 1;
+        int ASPECT_RATIO_HEIGHT_BIAS = 2;
+    }
+
+
+    @IntDef({PatternViewMode.CORRECT, PatternViewMode.AUTO_DRAW, PatternViewMode.WRONG})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface PatternViewMode {
+
+        int CORRECT = 0;
+        /**
+         * Automatically draw the pattern for demo or tutorial purposes.
+         */
+        int AUTO_DRAW = 1;
+        /**
+         * This state represents a wrongly drawn pattern by the user. The color of the path and
+         * the dots both would be changed to this color.
+         * <p>
+         * (NOTE - Consider showing this state in an attention-seeking color)
+         */
+        int WRONG = 2;
+    }
+
+    public interface PatternLockViewListener {
+
+
+        void onStarted();
+
+
+        void onProgress(List<PatternLockView.Dot> progressPattern);
+
+
+        void onComplete(List<PatternLockView.Dot> pattern);
+
+
+        void onCleared();
+    }
+
     /**
      * Represents a cell in the matrix of the pattern view
      */
     public static class Dot implements Parcelable {
 
-        private int mRow;
-        private int mColumn;
-        private static Dot[][] sDots;
+        public static final Creator<Dot> CREATOR = new Creator<Dot>() {
+
+            public Dot createFromParcel(Parcel in) {
+                return new Dot(in);
+            }
+
+            public Dot[] newArray(int size) {
+                return new Dot[size];
+            }
+        };
+        private static final Dot[][] sDots;
 
         static {
             sDots = new Dot[sDotCount][sDotCount];
@@ -1134,26 +1314,18 @@ public class PatternLockView extends View {
             }
         }
 
+        private final int mRow;
+        private final int mColumn;
+
         private Dot(int row, int column) {
             checkRange(row, column);
             this.mRow = row;
             this.mColumn = column;
         }
 
-        /**
-         * Gets the identifier of the dot. It is counted from left to right, top to bottom of the
-         * matrix, starting by zero
-         */
-        public int getId() {
-            return mRow * sDotCount + mColumn;
-        }
-
-        public int getRow() {
-            return mRow;
-        }
-
-        public int getColumn() {
-            return mColumn;
+        private Dot(Parcel in) {
+            mColumn = in.readInt();
+            mRow = in.readInt();
         }
 
         /**
@@ -1183,6 +1355,20 @@ public class PatternLockView extends View {
             }
         }
 
+
+        public int getId() {
+            return mRow * sDotCount + mColumn;
+        }
+
+        public int getRow() {
+            return mRow;
+        }
+
+        public int getColumn() {
+            return mColumn;
+        }
+
+        @NonNull
         @Override
         public String toString() {
             return "(Row = " + mRow + ", Col = " + mColumn + ")";
@@ -1213,38 +1399,28 @@ public class PatternLockView extends View {
             dest.writeInt(mColumn);
             dest.writeInt(mRow);
         }
-
-        public static final Creator<Dot> CREATOR = new Creator<Dot>() {
-
-            public Dot createFromParcel(Parcel in) {
-                return new Dot(in);
-            }
-
-            public Dot[] newArray(int size) {
-                return new Dot[size];
-            }
-        };
-
-        private Dot(Parcel in) {
-            mColumn = in.readInt();
-            mRow = in.readInt();
-        }
     }
 
-    /**
-     * The parcelable for saving and restoring a lock pattern view
-     */
+
     private static class SavedState extends BaseSavedState {
 
+        public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
+
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
         private final String mSerializedPattern;
         private final int mDisplayMode;
         private final boolean mInputEnabled;
         private final boolean mInStealthMode;
         private final boolean mTactileFeedbackEnabled;
 
-        /**
-         * Constructor called from {@link PatternLockView#onSaveInstanceState()}
-         */
+
         private SavedState(Parcelable superState, String serializedPattern,
                            int displayMode, boolean inputEnabled, boolean inStealthMode,
                            boolean tactileFeedbackEnabled) {
@@ -1257,17 +1433,15 @@ public class PatternLockView extends View {
             mTactileFeedbackEnabled = tactileFeedbackEnabled;
         }
 
-        /**
-         * Constructor called from {@link #CREATOR}
-         */
+
         private SavedState(Parcel in) {
             super(in);
 
             mSerializedPattern = in.readString();
             mDisplayMode = in.readInt();
-            mInputEnabled = (Boolean) in.readValue(null);
-            mInStealthMode = (Boolean) in.readValue(null);
-            mTactileFeedbackEnabled = (Boolean) in.readValue(null);
+            mInputEnabled = (Boolean) in.readValue(getClass().getClassLoader());
+            mInStealthMode = (Boolean) in.readValue(getClass().getClassLoader());
+            mTactileFeedbackEnabled = (Boolean) in.readValue(getClass().getClassLoader());
         }
 
         public String getSerializedPattern() {
@@ -1299,18 +1473,6 @@ public class PatternLockView extends View {
             dest.writeValue(mInStealthMode);
             dest.writeValue(mTactileFeedbackEnabled);
         }
-
-        @SuppressWarnings("unused")
-        public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
-
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
     }
 
     public static class DotState {
@@ -1322,4 +1484,5 @@ public class PatternLockView extends View {
         float mLineEndY = Float.MIN_VALUE;
         ValueAnimator mLineAnimator;
     }
+
 }

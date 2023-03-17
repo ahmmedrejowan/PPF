@@ -2,4 +2,8 @@
 <resources>
     <color name="white">#FFFF</color>
     <color name="pomegranate">#f4511e</color>
+
+    <color name="greyish">#aaa8a8</color>
+    <color name="mine_shaft">#303030</color>
+
 </resources>

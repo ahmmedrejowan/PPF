@@ -1,7 +1,5 @@
 package com.rejowan.ppfdemo;
 
-import static com.rejowan.ppf.PatternLockView.stringToPattern;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -28,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         binding.pinLockView.attachIndicatorDots(binding.indicatorDots);
-        binding.indicatorDots.setPinLength(binding.pinLockView.getPinLength());
+        binding.indicatorDots.setCount(binding.pinLockView.getPinLength());
 
 
     //    binding.patternLockView.setPattern(PatternLockView.PatternViewMode.AUTO_DRAW, stringToPattern(binding.patternLockView, "01234"));

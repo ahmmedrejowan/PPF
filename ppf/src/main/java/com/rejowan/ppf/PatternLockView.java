@@ -107,11 +107,11 @@ public class PatternLockView extends View {
                     3);
             mPathWidth = (int) typedArray.getDimension(R.styleable.PatternLockView_lineWidth,
                     getDimensionInPx(getContext(), R.dimen.pattern_lock_path_width));
-            mNormalStateColor = typedArray.getColor(R.styleable.PatternLockView_normalStateColor,
+            mNormalStateColor = typedArray.getColor(R.styleable.PatternLockView_stateNormalColor,
                     getColor(getContext(), R.color.white));
-            mCorrectStateColor = typedArray.getColor(R.styleable.PatternLockView_correctStateColor,
+            mCorrectStateColor = typedArray.getColor(R.styleable.PatternLockView_stateCorrectColor,
                     getColor(getContext(), R.color.white));
-            mWrongStateColor = typedArray.getColor(R.styleable.PatternLockView_wrongStateColor,
+            mWrongStateColor = typedArray.getColor(R.styleable.PatternLockView_stateWrongColor,
                     getColor(getContext(), R.color.pomegranate));
             mDotNormalSize = (int) typedArray.getDimension(R.styleable.PatternLockView_dotNormalSize,
                     getDimensionInPx(getContext(), R.dimen.pattern_lock_dot_size));

@@ -1,6 +1,5 @@
 package com.rejowan.ppf;
 
-import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -20,16 +19,12 @@ import android.widget.LinearLayout;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DimenRes;
 import androidx.annotation.DrawableRes;
-import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.Random;
 
 public class PinLockView extends RecyclerView {
@@ -227,7 +222,7 @@ public class PinLockView extends RecyclerView {
         this.mPinLength = pinLength;
 
         if (isIndicatorDotsAttached()) {
-            mIndicatorDots.setPinLength(pinLength);
+            mIndicatorDots.setCount(pinLength);
         }
     }
 

@@ -29,14 +29,14 @@ public class IndicatorDots extends LinearLayout {
 
     private static final int DEFAULT_PIN_LENGTH = 4;
 
-    private final int mDotDiameter;
-    private final int mDotSpacing;
+    private final int mDiameter;
+    private final int mPadding;
     private final int mFillDrawable;
     private final int mEmptyDrawable;
-    private int mPinLength;
-    private int mIndicatorType;
+    private int mCount;
+    private int mType;
 
-    private int mPreviousLength;
+    private int mPreviousCount;
 
     public IndicatorDots(Context context) {
         this(context, null);
@@ -52,14 +52,14 @@ public class IndicatorDots extends LinearLayout {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.IndicatorDots);
 
         try {
-            mDotDiameter = (int) typedArray.getDimension(R.styleable.IndicatorDots_dotDiameter, getDimensionInPx(getContext(), R.dimen.default_dot_diameter));
-            mDotSpacing = (int) typedArray.getDimension(R.styleable.IndicatorDots_dotSpacing, getDimensionInPx(getContext(), R.dimen.default_dot_spacing));
-            mFillDrawable = typedArray.getResourceId(R.styleable.IndicatorDots_dotFilledBackground,
+            mDiameter = (int) typedArray.getDimension(R.styleable.IndicatorDots_diameter, getDimensionInPx(getContext(), R.dimen.default_dot_diameter));
+            mPadding = (int) typedArray.getDimension(R.styleable.IndicatorDots_padding, getDimensionInPx(getContext(), R.dimen.default_dot_spacing));
+            mFillDrawable = typedArray.getResourceId(R.styleable.IndicatorDots_backgroundFilled,
                     R.drawable.dot_filled);
-            mEmptyDrawable = typedArray.getResourceId(R.styleable.IndicatorDots_dotEmptyBackground,
+            mEmptyDrawable = typedArray.getResourceId(R.styleable.IndicatorDots_backgroundNormal,
                     R.drawable.dot_empty);
-            mPinLength = typedArray.getInt(R.styleable.IndicatorDots_indicatorLength, DEFAULT_PIN_LENGTH);
-            mIndicatorType = typedArray.getInt(R.styleable.IndicatorDots_indicatorType,
+            mCount = typedArray.getInt(R.styleable.IndicatorDots_count, DEFAULT_PIN_LENGTH);
+            mType = typedArray.getInt(R.styleable.IndicatorDots_type,
                     IndicatorType.FIXED);
         } finally {
             typedArray.recycle();
@@ -70,19 +70,19 @@ public class IndicatorDots extends LinearLayout {
 
     private void initView(Context context) {
         ViewCompat.setLayoutDirection(this, ViewCompat.LAYOUT_DIRECTION_LTR);
-        if (mIndicatorType == 0) {
-            for (int i = 0; i < mPinLength; i++) {
+        if (mType == 0) {
+            for (int i = 0; i < mCount; i++) {
                 View dot = new View(context);
                 emptyDot(dot);
 
-                LayoutParams params = new LayoutParams(mDotDiameter,
-                        mDotDiameter);
-                params.setMargins(mDotSpacing, 0, mDotSpacing, 0);
+                LayoutParams params = new LayoutParams(mDiameter,
+                        mDiameter);
+                params.setMargins(mPadding, 0, mPadding, 0);
                 dot.setLayoutParams(params);
 
                 addView(dot);
             }
-        } else if (mIndicatorType == 2) {
+        } else if (mType == 2) {
             setLayoutTransition(new LayoutTransition());
         }
     }
@@ -91,49 +91,49 @@ public class IndicatorDots extends LinearLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         // If the indicator type is not fixed
-        if (mIndicatorType != 0) {
+        if (mType != 0) {
             ViewGroup.LayoutParams params = this.getLayoutParams();
-            params.height = mDotDiameter;
+            params.height = mDiameter;
             requestLayout();
         }
     }
 
     void updateDot(int length) {
-        if (mIndicatorType == 0) {
+        if (mType == 0) {
             if (length > 0) {
-                if (length > mPreviousLength) {
+                if (length > mPreviousCount) {
                     fillDot(getChildAt(length - 1));
                 } else {
                     emptyDot(getChildAt(length));
                 }
-                mPreviousLength = length;
+                mPreviousCount = length;
             } else {
                 // When {@code mPinLength} is 0, we need to reset all the views back to empty
                 for (int i = 0; i < getChildCount(); i++) {
                     View v = getChildAt(i);
                     emptyDot(v);
                 }
-                mPreviousLength = 0;
+                mPreviousCount = 0;
             }
         } else {
             if (length > 0) {
-                if (length > mPreviousLength) {
+                if (length > mPreviousCount) {
                     View dot = new View(getContext());
                     fillDot(dot);
 
-                    LayoutParams params = new LayoutParams(mDotDiameter,
-                            mDotDiameter);
-                    params.setMargins(mDotSpacing, 0, mDotSpacing, 0);
+                    LayoutParams params = new LayoutParams(mDiameter,
+                            mDiameter);
+                    params.setMargins(mPadding, 0, mPadding, 0);
                     dot.setLayoutParams(params);
 
                     addView(dot, length - 1);
                 } else {
                     removeViewAt(length);
                 }
-                mPreviousLength = length;
+                mPreviousCount = length;
             } else {
                 removeAllViews();
-                mPreviousLength = 0;
+                mPreviousCount = 0;
             }
         }
     }
@@ -146,24 +146,24 @@ public class IndicatorDots extends LinearLayout {
         dot.setBackgroundResource(mFillDrawable);
     }
 
-    public int getPinLength() {
-        return mPinLength;
+    public int getCount() {
+        return mCount;
     }
 
-    public void setPinLength(int pinLength) {
-        this.mPinLength = pinLength;
+    public void setCount(int pinLength) {
+        this.mCount = pinLength;
         removeAllViews();
         initView(getContext());
     }
 
     public
     @IndicatorType
-    int getIndicatorType() {
-        return mIndicatorType;
+    int getType() {
+        return mType;
     }
 
-    public void setIndicatorType(@IndicatorType int type) {
-        this.mIndicatorType = type;
+    public void setType(@IndicatorType int type) {
+        this.mType = type;
         removeAllViews();
         initView(getContext());
     }

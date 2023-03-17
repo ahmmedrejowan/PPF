@@ -15,15 +15,15 @@
         android:layout_height="wrap_content"
         android:visibility="visible"
         app:aspectRatio="match_width"
-        app:correctStateColor="#4CAF50"
         app:dotAnimationDuration="150"
         app:dotNormalSize="20dp"
         app:dotSelectedSize="40dp"
         app:lineEndAnimationDuration="100"
         app:lineWidth="10dp"
-        app:normalStateColor="#32b6ce"
         app:patternLength="3"
-        app:wrongStateColor="#F44336" />
+        app:stateCorrectColor="#4CAF50"
+        app:stateNormalColor="#32b6ce"
+        app:stateWrongColor="#F44336" />
 
 
     <com.rejowan.ppf.IndicatorDots
@@ -32,9 +32,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        app:dotDiameter="12dp"
-        app:dotSpacing="16dp"
-        app:indicatorLength="6" />
+        app:diameter="17dp"
+        app:padding="10dp"
+        app:count="6" />
 
 
     <com.rejowan.ppf.PinLockView

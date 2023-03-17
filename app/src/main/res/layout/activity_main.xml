@@ -42,7 +42,7 @@
     <com.rejowan.ppf.PinLockView
         android:id="@+id/pin_lock_view"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
         android:layout_marginTop="10dp"
         app:keypadDeleteButtonPressedColor="#FF5722"
         app:keypadTextColor="@color/black"

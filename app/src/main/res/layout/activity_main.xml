@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:aspectRatio="width_bias"
-        android:visibility="gone"
+        android:visibility="visible"
         app:aspectRatioEnabled="true"
         app:correctStateColor="#4CAF50"
         app:dotAnimationDuration="150"

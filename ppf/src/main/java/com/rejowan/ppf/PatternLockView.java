@@ -65,7 +65,6 @@ public class PatternLockView extends View {
     private int mPatternSize;
     private boolean mDrawingProfilingStarted = false;
     private long mAnimatingPeriodStart;
-    private boolean mAspectRatioEnabled;
     private int mAspectRatio;
     private int mNormalStateColor;
     private int mWrongStateColor;
@@ -101,13 +100,12 @@ public class PatternLockView extends View {
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PatternLockView);
         try {
-            sDotCount = typedArray.getInt(R.styleable.PatternLockView_dotCount,
+            sDotCount = typedArray.getInt(R.styleable.PatternLockView_patternLength,
                     DEFAULT_PATTERN_DOT_COUNT);
-            mAspectRatioEnabled = typedArray.getBoolean(R.styleable.PatternLockView_aspectRatioEnabled,
-                    false);
+
             mAspectRatio = typedArray.getInt(R.styleable.PatternLockView_aspectRatio,
-                    AspectRatio.ASPECT_RATIO_SQUARE);
-            mPathWidth = (int) typedArray.getDimension(R.styleable.PatternLockView_pathWidth,
+                    3);
+            mPathWidth = (int) typedArray.getDimension(R.styleable.PatternLockView_lineWidth,
                     getDimensionInPx(getContext(), R.dimen.pattern_lock_path_width));
             mNormalStateColor = typedArray.getColor(R.styleable.PatternLockView_normalStateColor,
                     getColor(getContext(), R.color.white));
@@ -122,7 +120,7 @@ public class PatternLockView extends View {
                     getDimensionInPx(getContext(), R.dimen.pattern_lock_dot_selected_size));
             mDotAnimationDuration = typedArray.getInt(R.styleable.PatternLockView_dotAnimationDuration,
                     DEFAULT_DOT_ANIMATION_DURATION);
-            mPathEndAnimationDuration = typedArray.getInt(R.styleable.PatternLockView_pathEndAnimationDuration,
+            mPathEndAnimationDuration = typedArray.getInt(R.styleable.PatternLockView_lineEndAnimationDuration,
                     DEFAULT_PATH_END_ANIMATION_DURATION);
         } finally {
             typedArray.recycle();
@@ -399,7 +397,7 @@ public class PatternLockView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        if (!mAspectRatioEnabled) {
+        if (mAspectRatio==3) {
             return;
         }
 
@@ -681,14 +679,6 @@ public class PatternLockView extends View {
         invalidate();
     }
 
-    public boolean isAspectRatioEnabled() {
-        return mAspectRatioEnabled;
-    }
-
-    public void setAspectRatioEnabled(boolean aspectRatioEnabled) {
-        mAspectRatioEnabled = aspectRatioEnabled;
-        requestLayout();
-    }
 
     @AspectRatio
     public int getAspectRatio() {

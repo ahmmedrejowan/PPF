@@ -2,37 +2,36 @@
 <resources>
     <declare-styleable name="PatternLockView">
         <attr name="aspectRatio" format="enum">
-            <enum name="square" value="0"/>
-            <enum name="match_width" value="1"/>
-            <enum name="match_height" value="2"/>
+            <enum name="square" value="0" />
+            <enum name="match_width" value="1" />
+            <enum name="match_height" value="2" />
         </attr>
-        <attr name="dotAnimationDuration" format="integer"/>
-        <attr name="dotNormalSize" format="dimension"/>
-        <attr name="dotSelectedSize" format="dimension"/>
-        <attr name="lineEndAnimationDuration" format="integer"/>
-        <attr name="lineWidth" format="dimension"/>
-        <attr name="patternLength" format="integer"/>
-        <attr name="stateNormalColor" format="color"/>
-        <attr name="stateCorrectColor" format="color"/>
-        <attr name="stateWrongColor" format="color"/>
+        <attr name="dotAnimationDuration" format="integer" />
+        <attr name="dotNormalSize" format="dimension" />
+        <attr name="dotSelectedSize" format="dimension" />
+        <attr name="lineEndAnimationDuration" format="integer" />
+        <attr name="lineWidth" format="dimension" />
+        <attr name="patternLength" format="integer" />
+        <attr name="stateNormalColor" format="color" />
+        <attr name="stateCorrectColor" format="color" />
+        <attr name="stateWrongColor" format="color" />
     </declare-styleable>
 
 
     <declare-styleable name="PinLockView">
         <attr name="pinLength" format="integer" />
-        <attr name="keypadTextColor" format="color" />
-        <attr name="keypadTextSize" format="dimension" />
-        <attr name="keypadButtonSize" format="dimension" />
-        <attr name="keypadVerticalSpacing" format="dimension" />
-        <attr name="keypadHorizontalSpacing" format="dimension" />
-        <attr name="keypadButtonBackgroundDrawable" format="integer" />
-        <attr name="keypadDeleteButtonDrawable" format="integer" />
-        <attr name="keypadDeleteButtonSize" format="dimension" />
-        <attr name="keypadShowDeleteButton" format="boolean" />
-        <attr name="keypadDeleteButtonPressedColor" format="color" />
+        <attr name="deleteButtonDrawable" format="integer" />
+        <attr name="deleteButtonSize" format="dimension" />
+        <attr name="deleteButtonPressedColor" format="color" />
+        <attr name="keyTextColor" format="color" />
+        <attr name="keyTextSize" format="dimension" />
+        <attr name="keyButtonSize" format="dimension" />
+        <attr name="keyVerticalSpacing" format="dimension" />
+        <attr name="keyHorizontalSpacing" format="dimension" />
+        <attr name="keyBackgroundDrawable" format="integer" />
+        <attr name="showDeleteButton" format="boolean" />
 
     </declare-styleable>
-
 
 
     <declare-styleable name="IndicatorDots">
@@ -48,8 +47,6 @@
         </attr>
 
     </declare-styleable>
-
-
 
 
 </resources>

@@ -153,16 +153,16 @@ public class PinLockView extends RecyclerView {
 
         try {
             mPinLength = typedArray.getInt(R.styleable.PinLockView_pinLength, DEFAULT_PIN_LENGTH);
-            mHorizontalSpacing = (int) typedArray.getDimension(R.styleable.PinLockView_keypadHorizontalSpacing, getDimensionInPx(getContext(), R.dimen.default_horizontal_spacing));
-            mVerticalSpacing = (int) typedArray.getDimension(R.styleable.PinLockView_keypadVerticalSpacing, getDimensionInPx(getContext(), R.dimen.default_vertical_spacing));
-            mTextColor = typedArray.getColor(R.styleable.PinLockView_keypadTextColor, getColor(getContext(), R.color.white));
-            mTextSize = (int) typedArray.getDimension(R.styleable.PinLockView_keypadTextSize, getDimensionInPx(getContext(), R.dimen.default_text_size));
-            mButtonSize = (int) typedArray.getDimension(R.styleable.PinLockView_keypadButtonSize, getDimensionInPx(getContext(), R.dimen.default_button_size));
-            mDeleteButtonSize = (int) typedArray.getDimension(R.styleable.PinLockView_keypadDeleteButtonSize, getDimensionInPx(getContext(), R.dimen.default_delete_button_size));
-            mButtonBackgroundDrawable = typedArray.getDrawable(R.styleable.PinLockView_keypadButtonBackgroundDrawable);
-            mDeleteButtonDrawable = typedArray.getDrawable(R.styleable.PinLockView_keypadDeleteButtonDrawable);
-            mShowDeleteButton = typedArray.getBoolean(R.styleable.PinLockView_keypadShowDeleteButton, true);
-            mDeleteButtonPressedColor = typedArray.getColor(R.styleable.PinLockView_keypadDeleteButtonPressedColor, getColor(getContext(), R.color.greyish));
+            mHorizontalSpacing = (int) typedArray.getDimension(R.styleable.PinLockView_keyHorizontalSpacing, getDimensionInPx(getContext(), R.dimen.default_horizontal_spacing));
+            mVerticalSpacing = (int) typedArray.getDimension(R.styleable.PinLockView_keyVerticalSpacing, getDimensionInPx(getContext(), R.dimen.default_vertical_spacing));
+            mTextColor = typedArray.getColor(R.styleable.PinLockView_keyTextColor, getColor(getContext(), R.color.white));
+            mTextSize = (int) typedArray.getDimension(R.styleable.PinLockView_keyTextSize, getDimensionInPx(getContext(), R.dimen.default_text_size));
+            mButtonSize = (int) typedArray.getDimension(R.styleable.PinLockView_keyButtonSize, getDimensionInPx(getContext(), R.dimen.default_button_size));
+            mDeleteButtonSize = (int) typedArray.getDimension(R.styleable.PinLockView_deleteButtonSize, getDimensionInPx(getContext(), R.dimen.default_delete_button_size));
+            mButtonBackgroundDrawable = typedArray.getDrawable(R.styleable.PinLockView_keyBackgroundDrawable);
+            mDeleteButtonDrawable = typedArray.getDrawable(R.styleable.PinLockView_deleteButtonDrawable);
+            mShowDeleteButton = typedArray.getBoolean(R.styleable.PinLockView_showDeleteButton, true);
+            mDeleteButtonPressedColor = typedArray.getColor(R.styleable.PinLockView_deleteButtonPressedColor, getColor(getContext(), R.color.greyish));
         } finally {
             typedArray.recycle();
         }

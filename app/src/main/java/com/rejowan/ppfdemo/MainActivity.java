@@ -1,11 +1,11 @@
 package com.rejowan.ppfdemo;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.rejowan.ppf.PatternLockView;
 import com.rejowan.ppfdemo.databinding.ActivityMainBinding;
@@ -24,12 +24,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
 
-
         binding.pinLockView.attachIndicatorDots(binding.indicatorDots);
         binding.indicatorDots.setCount(binding.pinLockView.getPinLength());
 
 
-    //    binding.patternLockView.setPattern(PatternLockView.PatternViewMode.AUTO_DRAW, stringToPattern(binding.patternLockView, "01234"));
+        //    binding.patternLockView.setPattern(PatternLockView.PatternViewMode.AUTO_DRAW, stringToPattern(binding.patternLockView, "01234"));
 
         binding.patternLockView.addPatternLockListener(new PatternLockView.PatternLockViewListener() {
             @Override
@@ -47,30 +46,30 @@ public class MainActivity extends AppCompatActivity {
 
                 if (PatternLockView.patternToString(binding.patternLockView, pattern).equals("0367")) {
 
-                    Log.e("TAG", "success: " + PatternLockView.patternToString(binding.patternLockView, pattern)  );
+                    Log.e("TAG", "success: " + PatternLockView.patternToString(binding.patternLockView, pattern));
 
                     binding.patternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
 
-                    new Handler().postDelayed(() -> Toast.makeText(MainActivity.this,"Logged In", Toast.LENGTH_SHORT).show(),1000);
+                    new Handler().postDelayed(() -> Toast.makeText(MainActivity.this, "Logged In", Toast.LENGTH_SHORT).show(), 1000);
 
 
                 } else {
-                    Log.e("TAG", "failed: " + PatternLockView.patternToString(binding.patternLockView, pattern)  );
+                    Log.e("TAG", "failed: " + PatternLockView.patternToString(binding.patternLockView, pattern));
 
                     binding.patternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
 
                     new Handler().postDelayed(() -> {
 
-                        Toast.makeText(MainActivity.this,"Wrong Pattern", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Wrong Pattern", Toast.LENGTH_SHORT).show();
 
                         binding.patternLockView.clearPattern();
 
-                    },1000);
+                    }, 1000);
 
 
                 }
 
-                Log.e("TAG", "onComplete: " + PatternLockView.patternToString(binding.patternLockView, pattern)  );
+                Log.e("TAG", "onComplete: " + PatternLockView.patternToString(binding.patternLockView, pattern));
 
             }
 
@@ -79,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
 
 
     }

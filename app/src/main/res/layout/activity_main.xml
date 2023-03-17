@@ -42,9 +42,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="10dp"
-        app:keypadDeleteButtonPressedColor="#FF5722"
-        app:keypadDeleteButtonSize="20dp"
-        app:keypadTextColor="@color/black"
+        app:deleteButtonPressedColor="#FF5722"
+        app:deleteButtonSize="20dp"
+        app:keyTextColor="@color/black"
         app:pinLength="6" />
 
 

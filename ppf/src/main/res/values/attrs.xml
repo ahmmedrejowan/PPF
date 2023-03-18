@@ -21,6 +21,7 @@
     <declare-styleable name="PinLockView">
         <attr name="pinLength" format="integer" />
         <attr name="deleteButtonDrawable" format="integer" />
+        <attr name="deleteButtonNormalColor" format="color" />
         <attr name="deleteButtonSize" format="dimension" />
         <attr name="deleteButtonPressedColor" format="color" />
         <attr name="keyTextColor" format="color" />

@@ -15,8 +15,10 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
+        app:dotDrawableFilled="@drawable/ic_star_filled"
+        app:dotDrawableNormal="@drawable/ic_star_normal"
         app:count="6"
-        app:diameter="17dp"
+        app:diameter="30dp"
         app:padding="10dp" />
 
 
@@ -30,7 +32,6 @@
         android:background="#32b6ce"
         app:deleteButtonPressedColor="#FF5722"
         app:deleteButtonSize="24dp"
-        app:keyTextColor="@color/white"
         app:keyTextSize="20sp"
         app:pinLength="6" />
 

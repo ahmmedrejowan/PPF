@@ -35,7 +35,7 @@ public class PinLockView extends RecyclerView {
     private String mPin = "";
     private int mPinLength;
     private int mHorizontalSpacing, mVerticalSpacing;
-    private int mTextColor, mDeleteButtonPressedColor;
+    private int mTextColor, mDeleteButtonPressedColor, mDeleteButtonNormalColor;
     private int mTextSize, mButtonSize, mDeleteButtonSize;
     private Drawable mButtonBackgroundDrawable;
     private Drawable mDeleteButtonDrawable;
@@ -44,9 +44,6 @@ public class PinLockView extends RecyclerView {
     private IndicatorDots mIndicatorDots;
     private PinLockAdapter mAdapter;
     private PinLockListener mPinLockListener;
-    private CustomizationOptionsBundle mCustomizationOptionsBundle;
-    private int[] mCustomKeySet;
-
     private final PinLockAdapter.OnNumberClickListener mOnNumberClickListener
             = new PinLockAdapter.OnNumberClickListener() {
         @Override
@@ -91,7 +88,6 @@ public class PinLockView extends RecyclerView {
             }
         }
     };
-
     private final PinLockAdapter.OnDeleteClickListener mOnDeleteClickListener
             = new PinLockAdapter.OnDeleteClickListener() {
         @Override
@@ -131,6 +127,8 @@ public class PinLockView extends RecyclerView {
             }
         }
     };
+    private CustomizationOptionsBundle mCustomizationOptionsBundle;
+    private int[] mCustomKeySet;
 
     public PinLockView(Context context) {
         super(context);
@@ -145,6 +143,36 @@ public class PinLockView extends RecyclerView {
     public PinLockView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs, defStyle);
+    }
+
+    public static int getColor(Context context, @ColorRes int id) {
+        return ContextCompat.getColor(context, id);
+    }
+
+    public static float getDimensionInPx(Context context, @DimenRes int id) {
+        return context.getResources().getDimension(id);
+    }
+
+    public static Drawable getDrawable(Context context, @DrawableRes int id) {
+        return ContextCompat.getDrawable(context, id);
+    }
+
+    static int[] shuffle(int[] array) {
+        int length = array.length;
+        Random random = new Random();
+        random.nextInt();
+
+        for (int i = 0; i < length; i++) {
+            int change = i + random.nextInt(length - i);
+            swap(array, i, change);
+        }
+        return array;
+    }
+
+    private static void swap(int[] array, int index, int change) {
+        int temp = array[index];
+        array[index] = array[change];
+        array[change] = temp;
     }
 
     private void init(AttributeSet attributeSet, int defStyle) {
@@ -163,6 +191,7 @@ public class PinLockView extends RecyclerView {
             mDeleteButtonDrawable = typedArray.getDrawable(R.styleable.PinLockView_deleteButtonDrawable);
             mShowDeleteButton = typedArray.getBoolean(R.styleable.PinLockView_showDeleteButton, true);
             mDeleteButtonPressedColor = typedArray.getColor(R.styleable.PinLockView_deleteButtonPressedColor, getColor(getContext(), R.color.greyish));
+            mDeleteButtonNormalColor = typedArray.getColor(R.styleable.PinLockView_deleteButtonNormalColor, 0);
         } finally {
             typedArray.recycle();
         }
@@ -233,7 +262,6 @@ public class PinLockView extends RecyclerView {
     public int getTextColor() {
         return mTextColor;
     }
-
 
     public void setTextColor(int textColor) {
         this.mTextColor = textColor;
@@ -405,10 +433,6 @@ public class PinLockView extends RecyclerView {
         mPin = "";
     }
 
-    /**
-     * Resets the {@link PinLockView}, clearing the entered pin
-     * and resetting the {@link IndicatorDots} if attached
-     */
     public void resetPinLockView() {
 
         clearInternalPin();
@@ -421,22 +445,24 @@ public class PinLockView extends RecyclerView {
         }
     }
 
-    /**
-     * Returns true if {@link IndicatorDots} are attached to {@link PinLockView}
-     *
-     * @return true if attached, false otherwise
-     */
     public boolean isIndicatorDotsAttached() {
         return mIndicatorDots != null;
     }
 
-    /**
-     * Attaches {@link IndicatorDots} to {@link PinLockView}
-     *
-     * @param mIndicatorDots the view to attach
-     */
     public void attachIndicatorDots(IndicatorDots mIndicatorDots) {
         this.mIndicatorDots = mIndicatorDots;
+    }
+
+    public interface PinLockListener {
+
+
+        void onComplete(String pin);
+
+
+        void onEmpty();
+
+
+        void onPinChange(int pinLength, String intermediatePin);
     }
 
 
@@ -593,6 +619,16 @@ public class PinLockView extends RecyclerView {
             this.mCustomizationOptionsBundle = customizationOptionsBundle;
         }
 
+        public interface OnNumberClickListener {
+            void onNumberClicked(int keyValue);
+        }
+
+        public interface OnDeleteClickListener {
+            void onDeleteClicked();
+
+            void onDeleteLongClicked();
+        }
+
         public class NumberViewHolder extends RecyclerView.ViewHolder {
             Button mNumberButton;
 
@@ -620,7 +656,13 @@ public class PinLockView extends RecyclerView {
                 mDeleteButton = itemView.findViewById(R.id.button);
                 mButtonImage = itemView.findViewById(R.id.buttonImage);
 
+
                 if (mCustomizationOptionsBundle.isShowDeleteButton() && mPinLength > 0) {
+
+                    if (mCustomizationOptionsBundle.getDeleteButtonNormalColor()!=0){
+                        mButtonImage.setColorFilter(mCustomizationOptionsBundle.getDeleteButtonNormalColor(), PorterDuff.Mode.SRC_ATOP);
+                    }
+
                     mDeleteButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -651,13 +693,21 @@ public class PinLockView extends RecyclerView {
                                 rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
                             }
                             if (event.getAction() == MotionEvent.ACTION_UP) {
-                                mButtonImage.clearColorFilter();
+                                if (mCustomizationOptionsBundle.getDeleteButtonNormalColor()!=0){
+                                    mButtonImage.setColorFilter(mCustomizationOptionsBundle.getDeleteButtonNormalColor(), PorterDuff.Mode.SRC_ATOP);
+                                } else {
+                                    mButtonImage.clearColorFilter();
+                                }
+
                             }
                             if (event.getAction() == MotionEvent.ACTION_MOVE) {
                                 if (!rect.contains(v.getLeft() + (int) event.getX(),
                                         v.getTop() + (int) event.getY())) {
-                                    mButtonImage.clearColorFilter();
-                                }
+                                    if (mCustomizationOptionsBundle.getDeleteButtonNormalColor()!=0){
+                                        mButtonImage.setColorFilter(mCustomizationOptionsBundle.getDeleteButtonNormalColor(), PorterDuff.Mode.SRC_ATOP);
+                                    } else {
+                                        mButtonImage.clearColorFilter();
+                                    }                                }
                             }
                             return false;
                         }
@@ -665,60 +715,8 @@ public class PinLockView extends RecyclerView {
                 }
             }
         }
-
-        public interface OnNumberClickListener {
-            void onNumberClicked(int keyValue);
-        }
-
-        public interface OnDeleteClickListener {
-            void onDeleteClicked();
-
-            void onDeleteLongClicked();
-        }
     }
 
-    public interface PinLockListener {
-
-
-        void onComplete(String pin);
-
-
-        void onEmpty();
-
-
-        void onPinChange(int pinLength, String intermediatePin);
-    }
-
-
-    public static int getColor(Context context, @ColorRes int id) {
-        return ContextCompat.getColor(context, id);
-    }
-
-    public static float getDimensionInPx(Context context, @DimenRes int id) {
-        return context.getResources().getDimension(id);
-    }
-
-    public static Drawable getDrawable(Context context, @DrawableRes int id) {
-        return ContextCompat.getDrawable(context, id);
-    }
-
-    static int[] shuffle(int[] array) {
-        int length = array.length;
-        Random random = new Random();
-        random.nextInt();
-
-        for (int i = 0; i < length; i++) {
-            int change = i + random.nextInt(length - i);
-            swap(array, i, change);
-        }
-        return array;
-    }
-
-    private static void swap(int[] array, int index, int change) {
-        int temp = array[index];
-        array[index] = array[change];
-        array[change] = temp;
-    }
 
     public class LTRGridLayoutManager extends GridLayoutManager {
 
@@ -789,6 +787,7 @@ public class PinLockView extends RecyclerView {
         private int deleteButtonSize;
         private boolean showDeleteButton;
         private int deleteButtonPressesColor;
+        private int deleteButtonNormalColor;
 
         public CustomizationOptionsBundle() {
         }
@@ -855,6 +854,14 @@ public class PinLockView extends RecyclerView {
 
         public void setDeleteButtonPressesColor(int deleteButtonPressesColor) {
             this.deleteButtonPressesColor = deleteButtonPressesColor;
+        }
+
+        public int getDeleteButtonNormalColor() {
+            return deleteButtonNormalColor;
+        }
+
+        public void setDeleteButtonNormalColor(int deleteButtonNormalColor) {
+            this.deleteButtonNormalColor = deleteButtonNormalColor;
         }
     }
 }

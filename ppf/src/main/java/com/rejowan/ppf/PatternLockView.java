@@ -397,7 +397,7 @@ public class PatternLockView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        if (mAspectRatio==3) {
+        if (mAspectRatio == 3) {
             return;
         }
 

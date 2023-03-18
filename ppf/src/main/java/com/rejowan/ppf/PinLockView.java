@@ -47,7 +47,7 @@ public class PinLockView extends RecyclerView {
     private CustomizationOptionsBundle mCustomizationOptionsBundle;
     private int[] mCustomKeySet;
 
-    private PinLockAdapter.OnNumberClickListener mOnNumberClickListener
+    private final PinLockAdapter.OnNumberClickListener mOnNumberClickListener
             = new PinLockAdapter.OnNumberClickListener() {
         @Override
         public void onNumberClicked(int keyValue) {
@@ -92,7 +92,7 @@ public class PinLockView extends RecyclerView {
         }
     };
 
-    private PinLockAdapter.OnDeleteClickListener mOnDeleteClickListener
+    private final PinLockAdapter.OnDeleteClickListener mOnDeleteClickListener
             = new PinLockAdapter.OnDeleteClickListener() {
         @Override
         public void onDeleteClicked() {
@@ -188,7 +188,6 @@ public class PinLockView extends RecyclerView {
         mAdapter.setOnDeleteClickListener(mOnDeleteClickListener);
         mAdapter.setCustomizationOptions(mCustomizationOptionsBundle);
         setAdapter(mAdapter);
-
 
 
         addItemDecoration(new ItemSpaceDecoration(mHorizontalSpacing, mVerticalSpacing, 3, false));
@@ -441,12 +440,12 @@ public class PinLockView extends RecyclerView {
     }
 
 
-    public static class  PinLockAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public static class PinLockAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private static final int VIEW_TYPE_NUMBER = 0;
         private static final int VIEW_TYPE_DELETE = 1;
 
-        private Context mContext;
+        private final Context mContext;
         private CustomizationOptionsBundle mCustomizationOptionsBundle;
         private OnNumberClickListener mOnNumberClickListener;
         private OnDeleteClickListener mOnDeleteClickListener;
@@ -462,7 +461,7 @@ public class PinLockView extends RecyclerView {
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            if (viewType==VIEW_TYPE_NUMBER) {
+            if (viewType == VIEW_TYPE_NUMBER) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_number_item, parent, false);
                 return new NumberViewHolder(view);
             } else {
@@ -599,7 +598,7 @@ public class PinLockView extends RecyclerView {
 
             public NumberViewHolder(final View itemView) {
                 super(itemView);
-                mNumberButton = (Button) itemView.findViewById(R.id.button);
+                mNumberButton = itemView.findViewById(R.id.button);
                 mNumberButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -618,8 +617,8 @@ public class PinLockView extends RecyclerView {
             @SuppressLint("ClickableViewAccessibility")
             public DeleteViewHolder(final View itemView) {
                 super(itemView);
-                mDeleteButton = (LinearLayout) itemView.findViewById(R.id.button);
-                mButtonImage = (ImageView) itemView.findViewById(R.id.buttonImage);
+                mDeleteButton = itemView.findViewById(R.id.button);
+                mButtonImage = itemView.findViewById(R.id.buttonImage);
 
                 if (mCustomizationOptionsBundle.isShowDeleteButton() && mPinLength > 0) {
                     mDeleteButton.setOnClickListener(new View.OnClickListener() {
@@ -736,10 +735,11 @@ public class PinLockView extends RecyclerView {
         }
 
         @Override
-        protected boolean isLayoutRTL(){
+        protected boolean isLayoutRTL() {
             return false;
         }
     }
+
     public class ItemSpaceDecoration extends RecyclerView.ItemDecoration {
 
         private final int mHorizontalSpaceWidth;

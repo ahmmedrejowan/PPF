@@ -19,23 +19,13 @@ import java.lang.annotation.RetentionPolicy;
 
 public class IndicatorDots extends LinearLayout {
 
-    @IntDef({IndicatorType.FIXED, IndicatorType.FILL, IndicatorType.FILL_WITH_ANIMATION})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface IndicatorType {
-        int FIXED = 0;
-        int FILL = 1;
-        int FILL_WITH_ANIMATION = 2;
-    }
-
     private static final int DEFAULT_PIN_LENGTH = 4;
-
     private final int mDiameter;
     private final int mPadding;
     private final int mFillDrawable;
     private final int mEmptyDrawable;
     private int mCount;
     private int mType;
-
     private int mPreviousCount;
 
     public IndicatorDots(Context context) {
@@ -166,5 +156,13 @@ public class IndicatorDots extends LinearLayout {
         this.mType = type;
         removeAllViews();
         initView(getContext());
+    }
+
+    @IntDef({IndicatorType.FIXED, IndicatorType.FILL, IndicatorType.FILL_WITH_ANIMATION})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface IndicatorType {
+        int FIXED = 0;
+        int FILL = 1;
+        int FILL_WITH_ANIMATION = 2;
     }
 }

@@ -1,5 +1,7 @@
 package com.rejowan.ppfdemo;
 
+import static com.rejowan.ppf.PatternLockView.stringToPattern;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -28,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         binding.indicatorDots.setCount(binding.pinLockView.getPinLength());
 
 
-        //    binding.patternLockView.setPattern(PatternLockView.PatternViewMode.AUTO_DRAW, stringToPattern(binding.patternLockView, "01234"));
+        binding.patternLockView.setPattern(PatternLockView.PatternViewMode.AUTO_DRAW, stringToPattern(binding.patternLockView, "01234"));
 
         binding.patternLockView.addPatternLockListener(new PatternLockView.PatternLockViewListener() {
             @Override
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 Log.e("TAG", "onComplete: " + PatternLockView.patternToString(binding.patternLockView, pattern));
+                Log.e("TAG", "onComplete: " + pattern);
 
             }
 

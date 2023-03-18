@@ -36,8 +36,10 @@
 
     <declare-styleable name="IndicatorDots">
         <attr name="count" format="integer" />
-        <attr name="backgroundNormal" format="reference" />
-        <attr name="backgroundFilled" format="reference" />
+        <attr name="dotDrawableNormal" format="reference" />
+        <attr name="dotDrawableFilled" format="reference" />
+        <attr name="dotColorNormal" format="color" />
+        <attr name="dotColorFilled" format="color" />
         <attr name="diameter" format="dimension" />
         <attr name="padding" format="dimension" />
         <attr name="type" format="enum">

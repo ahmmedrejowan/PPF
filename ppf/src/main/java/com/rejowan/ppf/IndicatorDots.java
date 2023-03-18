@@ -1,5 +1,6 @@
 package com.rejowan.ppf;
 
+import static com.rejowan.ppf.PinLockView.getColor;
 import static com.rejowan.ppf.PinLockView.getDimensionInPx;
 
 import android.animation.LayoutTransition;
@@ -27,6 +28,8 @@ public class IndicatorDots extends LinearLayout {
     private int mCount;
     private int mType;
     private int mPreviousCount;
+    private final int mDotColorNormal;
+    private final int mDotColorFilled;
 
     public IndicatorDots(Context context) {
         this(context, null);
@@ -44,13 +47,16 @@ public class IndicatorDots extends LinearLayout {
         try {
             mDiameter = (int) typedArray.getDimension(R.styleable.IndicatorDots_diameter, getDimensionInPx(getContext(), R.dimen.default_dot_diameter));
             mPadding = (int) typedArray.getDimension(R.styleable.IndicatorDots_padding, getDimensionInPx(getContext(), R.dimen.default_dot_spacing));
-            mFillDrawable = typedArray.getResourceId(R.styleable.IndicatorDots_backgroundFilled,
+            mFillDrawable = typedArray.getResourceId(R.styleable.IndicatorDots_dotDrawableFilled,
                     R.drawable.dot_filled);
-            mEmptyDrawable = typedArray.getResourceId(R.styleable.IndicatorDots_backgroundNormal,
+            mEmptyDrawable = typedArray.getResourceId(R.styleable.IndicatorDots_dotDrawableNormal,
                     R.drawable.dot_empty);
             mCount = typedArray.getInt(R.styleable.IndicatorDots_count, DEFAULT_PIN_LENGTH);
             mType = typedArray.getInt(R.styleable.IndicatorDots_type,
                     IndicatorType.FIXED);
+
+            mDotColorNormal = typedArray.getColor(R.styleable.IndicatorDots_dotColorNormal, getColor(getContext(), R.color.dot_color_normal));
+            mDotColorFilled = typedArray.getColor(R.styleable.IndicatorDots_dotColorFilled, getColor(getContext(), R.color.dot_color_filled));
         } finally {
             typedArray.recycle();
         }
@@ -130,11 +136,13 @@ public class IndicatorDots extends LinearLayout {
 
     private void emptyDot(View dot) {
         dot.setBackgroundResource(mEmptyDrawable);
+
     }
 
     private void fillDot(View dot) {
         dot.setBackgroundResource(mFillDrawable);
     }
+
 
     public int getCount() {
         return mCount;

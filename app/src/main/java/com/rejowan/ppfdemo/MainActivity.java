@@ -30,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
         binding.indicatorDots.setCount(binding.pinLockView.getPinLength());
 
 
+
+
+
         binding.patternLockView.setPattern(PatternLockView.PatternViewMode.AUTO_DRAW, stringToPattern(binding.patternLockView, "01234"));
 
         binding.patternLockView.addPatternLockListener(new PatternLockView.PatternLockViewListener() {

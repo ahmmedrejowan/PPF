@@ -136,11 +136,16 @@ public class IndicatorDots extends LinearLayout {
 
     private void emptyDot(View dot) {
         dot.setBackgroundResource(mEmptyDrawable);
+        // set color filter for view
+        dot.getBackground().setColorFilter(mDotColorNormal, android.graphics.PorterDuff.Mode.SRC_IN);
+
 
     }
 
     private void fillDot(View dot) {
         dot.setBackgroundResource(mFillDrawable);
+        // set color filter for view
+        dot.getBackground().setColorFilter(mDotColorFilled, android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
 

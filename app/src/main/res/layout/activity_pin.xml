@@ -7,29 +7,31 @@
     tools:context=".Pin">
 
 
-
     <com.rejowan.ppf.IndicatorDots
         android:id="@+id/indicator_dots"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="50dp"
         android:layout_above="@id/pin_lock_view"
         android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        app:count="6"
         app:diameter="17dp"
-        app:padding="10dp"
-        app:count="6" />
+        app:padding="10dp" />
 
 
     <com.rejowan.ppf.PinLockView
-        android:layout_alignParentBottom="true"
         android:id="@+id/pin_lock_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="100dp"
+        android:paddingBottom="20dp"
+        android:background="#32b6ce"
         app:deleteButtonPressedColor="#FF5722"
-        app:deleteButtonSize="20dp"
-        app:keyTextColor="@color/black"
+        app:deleteButtonSize="24dp"
+        app:keyTextColor="@color/white"
+        app:keyTextSize="20sp"
         app:pinLength="6" />
 
 

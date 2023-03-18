@@ -55,8 +55,8 @@ public class IndicatorDots extends LinearLayout {
             mType = typedArray.getInt(R.styleable.IndicatorDots_type,
                     IndicatorType.FIXED);
 
-            mDotColorNormal = typedArray.getColor(R.styleable.IndicatorDots_dotColorNormal, getColor(getContext(), R.color.dot_color_normal));
-            mDotColorFilled = typedArray.getColor(R.styleable.IndicatorDots_dotColorFilled, getColor(getContext(), R.color.dot_color_filled));
+            mDotColorNormal = typedArray.getColor(R.styleable.IndicatorDots_dotColorNormal, 0);
+            mDotColorFilled = typedArray.getColor(R.styleable.IndicatorDots_dotColorFilled, 0);
         } finally {
             typedArray.recycle();
         }
@@ -137,7 +137,13 @@ public class IndicatorDots extends LinearLayout {
     private void emptyDot(View dot) {
         dot.setBackgroundResource(mEmptyDrawable);
         // set color filter for view
-        dot.getBackground().setColorFilter(mDotColorNormal, android.graphics.PorterDuff.Mode.SRC_IN);
+
+        if (mDotColorNormal!=0){
+            dot.getBackground().setColorFilter(mDotColorNormal, android.graphics.PorterDuff.Mode.SRC_IN);
+        }
+
+
+
 
 
     }
@@ -145,7 +151,11 @@ public class IndicatorDots extends LinearLayout {
     private void fillDot(View dot) {
         dot.setBackgroundResource(mFillDrawable);
         // set color filter for view
-        dot.getBackground().setColorFilter(mDotColorFilled, android.graphics.PorterDuff.Mode.SRC_IN);
+
+        if (mDotColorFilled!=0){
+            dot.getBackground().setColorFilter(mDotColorFilled, android.graphics.PorterDuff.Mode.SRC_IN);
+        }
+
     }
 
 

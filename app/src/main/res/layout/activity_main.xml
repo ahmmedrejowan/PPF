@@ -34,8 +34,6 @@
         android:layout_marginTop="50dp"
         app:diameter="17dp"
         app:padding="10dp"
-        app:dotColorFilled="@color/black"
-        app:dotColorNormal="#32b6ce"
         app:count="6" />
 
 

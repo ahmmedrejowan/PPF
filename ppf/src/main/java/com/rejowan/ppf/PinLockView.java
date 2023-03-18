@@ -205,6 +205,7 @@ public class PinLockView extends RecyclerView {
         mCustomizationOptionsBundle.setDeleteButtonSize(mDeleteButtonSize);
         mCustomizationOptionsBundle.setShowDeleteButton(mShowDeleteButton);
         mCustomizationOptionsBundle.setDeleteButtonPressesColor(mDeleteButtonPressedColor);
+        mCustomizationOptionsBundle.setDeleteButtonNormalColor(mDeleteButtonNormalColor);
 
         initView();
     }
@@ -389,20 +390,12 @@ public class PinLockView extends RecyclerView {
         mAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * Get the delete button pressed/focused state color
-     *
-     * @return color of the button
-     */
+
     public int getDeleteButtonPressedColor() {
         return mDeleteButtonPressedColor;
     }
 
-    /**
-     * Set the pressed/focused state color of the delete button
-     *
-     * @param deleteButtonPressedColor the color of the delete button
-     */
+
     public void setDeleteButtonPressedColor(int deleteButtonPressedColor) {
         this.mDeleteButtonPressedColor = deleteButtonPressedColor;
         mCustomizationOptionsBundle.setDeleteButtonPressesColor(deleteButtonPressedColor);
@@ -540,8 +533,15 @@ public class PinLockView extends RecyclerView {
                     if (mCustomizationOptionsBundle.getDeleteButtonDrawable() != null) {
                         holder.mButtonImage.setImageDrawable(mCustomizationOptionsBundle.getDeleteButtonDrawable());
                     }
-                    holder.mButtonImage.setColorFilter(mCustomizationOptionsBundle.getTextColor(),
-                            PorterDuff.Mode.SRC_ATOP);
+
+                    if (mCustomizationOptionsBundle.getDeleteButtonNormalColor() != 0) {
+                        holder.mButtonImage.setColorFilter(mCustomizationOptionsBundle.getDeleteButtonNormalColor(),
+                                PorterDuff.Mode.SRC_ATOP);
+                    } else {
+                        holder.mButtonImage.setColorFilter(mCustomizationOptionsBundle.getTextColor(),
+                                PorterDuff.Mode.SRC_ATOP);
+                    }
+
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             mCustomizationOptionsBundle.getDeleteButtonSize(),
                             mCustomizationOptionsBundle.getDeleteButtonSize());

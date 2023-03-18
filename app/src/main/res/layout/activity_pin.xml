@@ -31,6 +31,7 @@
         android:paddingBottom="20dp"
         android:background="#32b6ce"
         app:deleteButtonPressedColor="#FF5722"
+        app:deleteButtonNormalColor="#000000"
         app:deleteButtonSize="24dp"
         app:keyTextSize="20sp"
         app:pinLength="6" />

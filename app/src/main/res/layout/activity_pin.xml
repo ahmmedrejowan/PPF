@@ -1,9 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Pin">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <com.rejowan.ppf.IndicatorDots
+        android:id="@+id/indicator_dots"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:layout_above="@id/pin_lock_view"
+        android:layout_centerHorizontal="true"
+        app:diameter="17dp"
+        app:padding="10dp"
+        app:count="6" />
+
+
+    <com.rejowan.ppf.PinLockView
+        android:layout_alignParentBottom="true"
+        android:id="@+id/pin_lock_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:deleteButtonPressedColor="#FF5722"
+        app:deleteButtonSize="20dp"
+        app:keyTextColor="@color/black"
+        app:pinLength="6" />
+
+
+</RelativeLayout>

@@ -224,29 +224,17 @@ public class PinLockView extends RecyclerView {
         setOverScrollMode(OVER_SCROLL_NEVER);
     }
 
-    /**
-     * Sets a {@link PinLockListener} to the to listen to pin update events
-     *
-     * @param pinLockListener the listener
-     */
+
     public void setPinLockListener(PinLockListener pinLockListener) {
         this.mPinLockListener = pinLockListener;
     }
 
-    /**
-     * Get the length of the current pin length
-     *
-     * @return the length of the pin
-     */
+
     public int getPinLength() {
         return mPinLength;
     }
 
-    /**
-     * Sets the pin length dynamically
-     *
-     * @param pinLength the pin length
-     */
+
     public void setPinLength(int pinLength) {
         this.mPinLength = pinLength;
 
@@ -255,11 +243,7 @@ public class PinLockView extends RecyclerView {
         }
     }
 
-    /**
-     * Get the text color in the buttons
-     *
-     * @return the text color
-     */
+
     public int getTextColor() {
         return mTextColor;
     }
@@ -270,120 +254,72 @@ public class PinLockView extends RecyclerView {
         mAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * Get the size of the text in the buttons
-     *
-     * @return the size of the text in pixels
-     */
+
     public int getTextSize() {
         return mTextSize;
     }
 
-    /**
-     * Set the size of text in pixels
-     *
-     * @param textSize the text size in pixels
-     */
+
     public void setTextSize(int textSize) {
         this.mTextSize = textSize;
         mCustomizationOptionsBundle.setTextSize(textSize);
         mAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * Get the size of the pin buttons
-     *
-     * @return the size of the button in pixels
-     */
+
     public int getButtonSize() {
         return mButtonSize;
     }
 
-    /**
-     * Set the size of the pin buttons dynamically
-     *
-     * @param buttonSize the button size
-     */
+
     public void setButtonSize(int buttonSize) {
         this.mButtonSize = buttonSize;
         mCustomizationOptionsBundle.setButtonSize(buttonSize);
         mAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * Get the current background drawable of the buttons, can be null
-     *
-     * @return the background drawable
-     */
+
     public Drawable getButtonBackgroundDrawable() {
         return mButtonBackgroundDrawable;
     }
 
-    /**
-     * Set the background drawable of the buttons dynamically
-     *
-     * @param buttonBackgroundDrawable the background drawable
-     */
+
     public void setButtonBackgroundDrawable(Drawable buttonBackgroundDrawable) {
         this.mButtonBackgroundDrawable = buttonBackgroundDrawable;
         mCustomizationOptionsBundle.setButtonBackgroundDrawable(buttonBackgroundDrawable);
         mAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * Get the drawable of the delete button
-     *
-     * @return the delete button drawable
-     */
+
     public Drawable getDeleteButtonDrawable() {
         return mDeleteButtonDrawable;
     }
 
-    /**
-     * Set the drawable of the delete button dynamically
-     *
-     * @param deleteBackgroundDrawable the delete button drawable
-     */
+
     public void setDeleteButtonDrawable(Drawable deleteBackgroundDrawable) {
         this.mDeleteButtonDrawable = deleteBackgroundDrawable;
         mCustomizationOptionsBundle.setDeleteButtonDrawable(deleteBackgroundDrawable);
         mAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * Get the delete button size in pixels
-     *
-     * @return size in pixels
-     */
+
     public int getDeleteButtonSize() {
         return mDeleteButtonSize;
     }
 
-    /**
-     * Set the size of the delete button in pixels
-     *
-     * @param deleteButtonSize size in pixels
-     */
+
     public void setDeleteButtonSize(int deleteButtonSize) {
         this.mDeleteButtonSize = deleteButtonSize;
         mCustomizationOptionsBundle.setDeleteButtonSize(deleteButtonSize);
         mAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * Is the delete button shown
-     *
-     * @return returns true if shown, false otherwise
-     */
+
     public boolean isShowDeleteButton() {
         return mShowDeleteButton;
     }
 
-    /**
-     * Dynamically set if the delete button should be shown
-     *
-     * @param showDeleteButton true if the delete button should be shown, false otherwise
-     */
+
     public void setShowDeleteButton(boolean showDeleteButton) {
         this.mShowDeleteButton = showDeleteButton;
         mCustomizationOptionsBundle.setShowDeleteButton(showDeleteButton);

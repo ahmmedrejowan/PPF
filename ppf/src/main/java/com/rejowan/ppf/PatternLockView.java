@@ -632,10 +632,6 @@ public class PatternLockView extends View {
         return mInStealthMode;
     }
 
-    /**
-     * Set whether the View is in stealth mode. If {@code true}, there will be
-     * no visible feedback (path drawing, dot animating, etc) as the user enters the pattern
-     */
     public void setInStealthMode(boolean inStealthMode) {
         mInStealthMode = inStealthMode;
     }
@@ -781,11 +777,7 @@ public class PatternLockView extends View {
         setViewMode(patternViewMode);
     }
 
-    /**
-     * Set the display mode of the current pattern. This can be useful, for
-     * instance, after detecting a pattern to tell this view whether change the
-     * in progress result to correct or wrong.
-     */
+
     public void setViewMode(@PatternViewMode int patternViewMode) {
         mPatternViewMode = patternViewMode;
         if (patternViewMode == PatternViewMode.AUTO_DRAW) {
@@ -1040,12 +1032,7 @@ public class PatternLockView extends View {
         return -1;
     }
 
-    /**
-     * Helper method to find the column x falls into
-     *
-     * @param x The x coordinate
-     * @return The mColumn that x falls in, or -1 if it falls in no mColumn
-     */
+
     private int getColumnHit(float x) {
         final float squareWidth = mViewWidth;
         float hitSize = squareWidth * mHitFactor;
@@ -1248,16 +1235,7 @@ public class PatternLockView extends View {
     public @interface PatternViewMode {
 
         int CORRECT = 0;
-        /**
-         * Automatically draw the pattern for demo or tutorial purposes.
-         */
         int AUTO_DRAW = 1;
-        /**
-         * This state represents a wrongly drawn pattern by the user. The color of the path and
-         * the dots both would be changed to this color.
-         * <p>
-         * (NOTE - Consider showing this state in an attention-seeking color)
-         */
         int WRONG = 2;
     }
 
@@ -1276,9 +1254,7 @@ public class PatternLockView extends View {
         void onCleared();
     }
 
-    /**
-     * Represents a cell in the matrix of the pattern view
-     */
+
     public static class Dot implements Parcelable {
 
         public static final Creator<Dot> CREATOR = new Creator<Dot>() {
@@ -1318,18 +1294,13 @@ public class PatternLockView extends View {
             mRow = in.readInt();
         }
 
-        /**
-         * @param row    The mRow of the cell.
-         * @param column The mColumn of the cell.
-         */
+
         public static synchronized Dot of(int row, int column) {
             checkRange(row, column);
             return sDots[row][column];
         }
 
-        /**
-         * Gets a cell from its identifier
-         */
+
         public static synchronized Dot of(int id) {
             return of(id / sDotCount, id % sDotCount);
         }

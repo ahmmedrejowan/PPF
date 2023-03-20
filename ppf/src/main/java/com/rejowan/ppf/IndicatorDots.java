@@ -1,6 +1,5 @@
 package com.rejowan.ppf;
 
-import static com.rejowan.ppf.PinLockView.getColor;
 import static com.rejowan.ppf.PinLockView.getDimensionInPx;
 
 import android.animation.LayoutTransition;
@@ -138,12 +137,9 @@ public class IndicatorDots extends LinearLayout {
         dot.setBackgroundResource(mEmptyDrawable);
         // set color filter for view
 
-        if (mDotColorNormal!=0){
+        if (mDotColorNormal != 0) {
             dot.getBackground().setColorFilter(mDotColorNormal, android.graphics.PorterDuff.Mode.SRC_IN);
         }
-
-
-
 
 
     }
@@ -152,7 +148,7 @@ public class IndicatorDots extends LinearLayout {
         dot.setBackgroundResource(mFillDrawable);
         // set color filter for view
 
-        if (mDotColorFilled!=0){
+        if (mDotColorFilled != 0) {
             dot.getBackground().setColorFilter(mDotColorFilled, android.graphics.PorterDuff.Mode.SRC_IN);
         }
 

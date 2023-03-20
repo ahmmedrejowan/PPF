@@ -659,7 +659,7 @@ public class PinLockView extends RecyclerView {
 
                 if (mCustomizationOptionsBundle.isShowDeleteButton() && mPinLength > 0) {
 
-                    if (mCustomizationOptionsBundle.getDeleteButtonNormalColor()!=0){
+                    if (mCustomizationOptionsBundle.getDeleteButtonNormalColor() != 0) {
                         mButtonImage.setColorFilter(mCustomizationOptionsBundle.getDeleteButtonNormalColor(), PorterDuff.Mode.SRC_ATOP);
                     }
 
@@ -693,7 +693,7 @@ public class PinLockView extends RecyclerView {
                                 rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
                             }
                             if (event.getAction() == MotionEvent.ACTION_UP) {
-                                if (mCustomizationOptionsBundle.getDeleteButtonNormalColor()!=0){
+                                if (mCustomizationOptionsBundle.getDeleteButtonNormalColor() != 0) {
                                     mButtonImage.setColorFilter(mCustomizationOptionsBundle.getDeleteButtonNormalColor(), PorterDuff.Mode.SRC_ATOP);
                                 } else {
                                     mButtonImage.clearColorFilter();
@@ -703,11 +703,12 @@ public class PinLockView extends RecyclerView {
                             if (event.getAction() == MotionEvent.ACTION_MOVE) {
                                 if (!rect.contains(v.getLeft() + (int) event.getX(),
                                         v.getTop() + (int) event.getY())) {
-                                    if (mCustomizationOptionsBundle.getDeleteButtonNormalColor()!=0){
+                                    if (mCustomizationOptionsBundle.getDeleteButtonNormalColor() != 0) {
                                         mButtonImage.setColorFilter(mCustomizationOptionsBundle.getDeleteButtonNormalColor(), PorterDuff.Mode.SRC_ATOP);
                                     } else {
                                         mButtonImage.clearColorFilter();
-                                    }                                }
+                                    }
+                                }
                             }
                             return false;
                         }

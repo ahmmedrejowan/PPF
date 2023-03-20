@@ -410,12 +410,12 @@ public class PatternLockView extends View {
             case AspectRatio.ASPECT_RATIO_SQUARE:
                 newWidth = newHeight = Math.min(oldWidth, oldHeight);
                 break;
-            case AspectRatio.ASPECT_RATIO_WIDTH_BIAS:
+            case AspectRatio.ASPECT_RATIO_MATCH_WIDTH:
                 newWidth = oldWidth;
                 newHeight = Math.min(oldWidth, oldHeight);
                 break;
 
-            case AspectRatio.ASPECT_RATIO_HEIGHT_BIAS:
+            case AspectRatio.ASPECT_RATIO_MATCH_HEIGHT:
                 newWidth = Math.min(oldWidth, oldHeight);
                 newHeight = oldHeight;
                 break;
@@ -1234,12 +1234,12 @@ public class PatternLockView extends View {
     }
 
 
-    @IntDef({AspectRatio.ASPECT_RATIO_SQUARE, AspectRatio.ASPECT_RATIO_WIDTH_BIAS, AspectRatio.ASPECT_RATIO_HEIGHT_BIAS})
+    @IntDef({AspectRatio.ASPECT_RATIO_SQUARE, AspectRatio.ASPECT_RATIO_MATCH_WIDTH, AspectRatio.ASPECT_RATIO_MATCH_HEIGHT})
     @Retention(RetentionPolicy.SOURCE)
     public @interface AspectRatio {
         int ASPECT_RATIO_SQUARE = 0;
-        int ASPECT_RATIO_WIDTH_BIAS = 1;
-        int ASPECT_RATIO_HEIGHT_BIAS = 2;
+        int ASPECT_RATIO_MATCH_WIDTH = 1;
+        int ASPECT_RATIO_MATCH_HEIGHT = 2;
     }
 
 

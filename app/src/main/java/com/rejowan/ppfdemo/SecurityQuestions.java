@@ -132,6 +132,10 @@ public class SecurityQuestions extends AppCompatActivity {
 
         ArrayList<String> userSelectedQuestions = sqUtils.getSelectedSQList();
 
+        if (userSelectedQuestions.size() == 0) {
+            return;
+        }
+
         binding.q1.setText(userSelectedQuestions.get(0));
         binding.q2.setText(userSelectedQuestions.get(1));
 

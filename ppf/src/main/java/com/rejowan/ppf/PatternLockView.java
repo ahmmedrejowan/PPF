@@ -84,7 +84,7 @@ public class PatternLockView extends View {
     private int mPatternViewMode = PatternViewMode.CORRECT;
     private boolean mInputEnabled = true;
     private boolean mInStealthMode = false;
-    private boolean mEnableHapticFeedback = true;
+    private boolean mEnableHapticFeedback = false;
     private boolean mPatternInProgress = false;
     private float mViewWidth;
     private float mViewHeight;

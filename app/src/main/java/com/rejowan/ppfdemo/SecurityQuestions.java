@@ -17,7 +17,6 @@ public class SecurityQuestions extends AppCompatActivity {
 
     ActivitySecurityQuestionsBinding binding;
     SQUtils sqUtils;
-
     ArrayList<String> questions = new ArrayList<>();
 
     @Override
@@ -37,8 +36,6 @@ public class SecurityQuestions extends AppCompatActivity {
     }
 
     private void SetupQuestions() {
-
-        // adding questions to the list
         ArrayList<String> stringArrayList = new ArrayList<>();
         stringArrayList.add("What is your mother's maiden name?");
         stringArrayList.add("What is your pet's name?");
@@ -48,18 +45,14 @@ public class SecurityQuestions extends AppCompatActivity {
         stringArrayList.add("What is your favorite book?");
         stringArrayList.add("What is your favorite song?");
         sqUtils.setAllSQList(stringArrayList);
-
         questions.add("Please select a question");
         questions.addAll(sqUtils.getAllSQList());
-
-
     }
 
     private void SetupQA() {
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, questions);
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item_drop);
         binding.spinner1.setAdapter(spinnerArrayAdapter);
-
 
         binding.spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -85,9 +78,6 @@ public class SecurityQuestions extends AppCompatActivity {
 
 
         binding.submit.setOnClickListener(v -> {
-
-            // get the selected items from the spinners
-
             if (binding.spinner1.getSelectedItemPosition() == 0) {
                 Toast.makeText(this, "Please select a question", Toast.LENGTH_SHORT).show();
                 return;
@@ -141,7 +131,6 @@ public class SecurityQuestions extends AppCompatActivity {
 
 
         binding.submit2.setOnClickListener(v -> {
-
             String answer1 = binding.answer3.getText().toString();
             String answer2 = binding.answer4.getText().toString();
 
@@ -159,7 +148,6 @@ public class SecurityQuestions extends AppCompatActivity {
                 }
 
             }
-
 
         });
 

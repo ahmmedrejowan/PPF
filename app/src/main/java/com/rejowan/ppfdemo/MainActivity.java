@@ -27,8 +27,6 @@ public class MainActivity extends AppCompatActivity {
         binding.finger.setOnClickListener(v -> startActivity(new Intent(this, FingerPrint.class)));
 
 
-
-
     }
 
 

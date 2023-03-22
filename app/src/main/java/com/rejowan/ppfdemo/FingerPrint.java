@@ -50,9 +50,6 @@ public class FingerPrint extends AppCompatActivity {
             Toast.makeText(this, "No Biometric Support", Toast.LENGTH_SHORT).show();
         }
 
-
-
     }
-
 
 }

@@ -79,5 +79,16 @@ public class SQUtils {
         return this.preferences.getString("answer:" + question, "").equals(stringToSHA256(answer));
     }
 
+    public void clearSQAnswer(String question) {
+        this.editor.remove("answer:" + question).apply();
+    }
+
+    public void clearAllSQAnswer() {
+        ArrayList<String> securityQuestions = getSelectedSQList();
+        for (String s : securityQuestions) {
+            this.editor.remove("answer:" + s).apply();
+        }
+    }
+
 
 }

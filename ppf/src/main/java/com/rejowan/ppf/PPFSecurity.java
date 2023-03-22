@@ -16,8 +16,10 @@ public class PPFSecurity {
     String PREF_NAME_GLOBAL = "security_ppf_pref_global";
     String PREF_NAME_FINGER = "security_ppf_pref_finger";
     String PREF_NAME_PIN = "security_ppf_pref_pin";
+    String PREF_NAME_PIN_ENABLED = "security_ppf_pref_pin_enabled";
     String PREF_NAME_TYPE = "security_ppf_pref_security_type";
     String PREF_NAME_PATTERN = "security_ppf_pref_pattern";
+    String PREF_NAME_PATTERN_ENABLED = "security_ppf_pref_pattern_enabled";
     String PREF_NAME_SQ = "security_ppf_pref_sq";
 
 
@@ -31,57 +33,94 @@ public class PPFSecurity {
         editor = preferences.edit();
     }
 
+
+
+
+    //////////////////////////////
     public void setPin(String pin) {
         editor.putString(PREF_NAME_PIN, stringToSHA256(pin));
         editor.apply();
-    }
-
-    public void setPattern(String pattern) {
-        editor.putString(PREF_NAME_PATTERN, stringToSHA256(pattern));
-        editor.apply();
+        setPinEnabled(true);
     }
 
     public boolean isPinSet() {
         return preferences.contains(PREF_NAME_PIN);
     }
 
-    public boolean isPatternSet() {
-        return preferences.contains(PREF_NAME_PATTERN);
-    }
-
     public boolean isPinCorrect(String pin) {
         return preferences.getString(PREF_NAME_PIN, "").equals(stringToSHA256(pin));
+    }
+
+    public void clearPin() {
+        editor.remove(PREF_NAME_PIN);
+        editor.apply();
+        setPinEnabled(false);
+    }
+
+    public void setPinEnabled(boolean isEnabled) {
+        editor.putBoolean(PREF_NAME_PIN_ENABLED, isEnabled);
+        editor.apply();
+    }
+
+    public boolean isPinEnabled() {
+        return preferences.getBoolean(PREF_NAME_PIN_ENABLED, false);
+    }
+    ////////////////////////////////////
+
+
+
+
+    //////////////////////////////
+    public void setPattern(String pattern) {
+        editor.putString(PREF_NAME_PATTERN, stringToSHA256(pattern));
+        editor.apply();
+        setPatternEnabled(true);
+    }
+
+    public boolean isPatternSet() {
+        return preferences.contains(PREF_NAME_PATTERN);
     }
 
     public boolean isPatternCorrect(String pattern) {
         return preferences.getString(PREF_NAME_PATTERN, "").equals(stringToSHA256(pattern));
     }
 
-    public void clearPin() {
-        editor.remove(PREF_NAME_PIN);
-        editor.apply();
-    }
-
     public void clearPattern() {
         editor.remove(PREF_NAME_PATTERN);
         editor.apply();
+        setPatternEnabled(false);
     }
 
-    public void setFingerPrint(boolean isFingerPrint) {
+    public void setPatternEnabled(boolean isEnabled) {
+        editor.putBoolean(PREF_NAME_PATTERN_ENABLED, isEnabled);
+        editor.apply();
+    }
+
+    public boolean isPatternEnabled() {
+        return preferences.getBoolean(PREF_NAME_PATTERN_ENABLED, false);
+    }
+  ///////////////////////////////////////
+
+
+
+    ///////////////////////////////////////
+    public void enableFingerPrint(boolean isFingerPrint) {
         editor.putBoolean(PREF_NAME_FINGER, isFingerPrint);
         editor.apply();
     }
 
-    public boolean isFingerPrintSet() {
+    public boolean isFingerPrintEnabled() {
         return preferences.getBoolean(PREF_NAME_FINGER, false);
     }
 
-    public void clearFingerPrint() {
+    public void clearFingerPrintSettings() {
         editor.remove(PREF_NAME_FINGER);
         editor.apply();
     }
+    ////////////////////////////////////////
 
-    // choose pin or pattern
+
+
     public void setSecurityType(PPFSecurityType type) {
         editor.putString(PREF_NAME_TYPE, type.name());
         editor.apply();
@@ -107,6 +146,10 @@ public class PPFSecurity {
         return preferences.contains(PREF_NAME_TYPE);
     }
 
+
+
+
+    //////////////////////
     public void setSQ(boolean isSet) {
         editor.putBoolean(PREF_NAME_SQ, isSet);
         editor.apply();
@@ -115,7 +158,10 @@ public class PPFSecurity {
     public boolean isSQSet() {
         return preferences.getBoolean(PREF_NAME_SQ, false);
     }
+    ////////////////////
 
+
+    ////////////////////////
     public void setGlobalToggle(boolean isGlobal) {
         editor.putBoolean(PREF_NAME_GLOBAL, isGlobal);
         editor.apply();
@@ -124,6 +170,8 @@ public class PPFSecurity {
     public boolean isGlobalToggle() {
         return preferences.getBoolean(PREF_NAME_GLOBAL, false);
     }
+    ///////////////////////
+
 
 
     private String bin2hex(byte[] data) {

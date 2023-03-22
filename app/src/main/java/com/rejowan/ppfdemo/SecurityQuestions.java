@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.rejowan.ppf.PPFSecurity;
 import com.rejowan.ppf.SQUtils;
 import com.rejowan.ppfdemo.databinding.ActivitySecurityQuestionsBinding;
 
@@ -142,6 +143,8 @@ public class SecurityQuestions extends AppCompatActivity {
 
                 if (sqUtils.checkSQAnswer(userSelectedQuestions.get(0), answer1) && sqUtils.checkSQAnswer(userSelectedQuestions.get(1), answer2)) {
                     Toast.makeText(this, "Verified", Toast.LENGTH_SHORT).show();
+                    new PPFSecurity(this).clearPin();
+                    new PPFSecurity(this).clearPattern();
 
                 } else {
                     Toast.makeText(this, "Wrong answers", Toast.LENGTH_SHORT).show();

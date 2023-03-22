@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.rejowan.ppf.PPFSecurity;
 import com.rejowan.ppf.PatternLockView;
 import com.rejowan.ppfdemo.databinding.ActivityPatternBinding;
 
@@ -19,6 +20,7 @@ public class Pattern extends AppCompatActivity {
 
     ActivityPatternBinding binding;
 
+    PPFSecurity ppfSecurity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,15 @@ public class Pattern extends AppCompatActivity {
         binding = ActivityPatternBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.patternLockView.setPattern(PatternLockView.PatternViewMode.AUTO_DRAW, stringToPattern(binding.patternLockView, "01234"));
+
+        ppfSecurity = new PPFSecurity(this);
+
+        if (!ppfSecurity.isPatternSet()){
+            binding.patternLockView.setPattern(PatternLockView.PatternViewMode.AUTO_DRAW, stringToPattern(binding.patternLockView, "01234"));
+        } else {
+            Toast.makeText(this, "Enter your pattern", Toast.LENGTH_SHORT).show();
+        }
+
 
         binding.patternLockView.addPatternLockListener(new PatternLockView.PatternLockViewListener() {
             @Override
@@ -42,33 +52,18 @@ public class Pattern extends AppCompatActivity {
             @Override
             public void onComplete(List<PatternLockView.Dot> pattern) {
 
-                if (PatternLockView.patternToString(binding.patternLockView, pattern).equals("0367")) {
-
-                    Log.e("TAG", "success: " + PatternLockView.patternToString(binding.patternLockView, pattern));
-
-                    binding.patternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
-
-                    new Handler().postDelayed(() -> Toast.makeText(Pattern.this, "Logged In", Toast.LENGTH_SHORT).show(), 1000);
-
-
-                } else {
-                    Log.e("TAG", "failed: " + PatternLockView.patternToString(binding.patternLockView, pattern));
-
-                    binding.patternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
-
-                    new Handler().postDelayed(() -> {
-
+                if (ppfSecurity.isPatternSet()){
+                    if (ppfSecurity.isPatternCorrect(PatternLockView.patternToString(binding.patternLockView, pattern))){
+                        Toast.makeText(Pattern.this, "Logged In", Toast.LENGTH_SHORT).show();
+                    } else {
                         Toast.makeText(Pattern.this, "Wrong Pattern", Toast.LENGTH_SHORT).show();
-
                         binding.patternLockView.clearPattern();
-
-                    }, 1000);
-
-
+                    }
+                }  else {
+                    ppfSecurity.setPattern(PatternLockView.patternToString(binding.patternLockView, pattern));
+                    Toast.makeText(Pattern.this, "Pattern Set", Toast.LENGTH_SHORT).show();
                 }
 
-                Log.e("TAG", "onComplete: " + PatternLockView.patternToString(binding.patternLockView, pattern));
-                Log.e("TAG", "onComplete: " + pattern);
 
             }
 

@@ -1,5 +1,7 @@
 plugins {
     id 'com.android.library'
+    id 'maven-publish'
+
 }
 
 android {
@@ -29,6 +31,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 
 }
 
@@ -42,4 +50,16 @@ dependencies {
 
     implementation "androidx.biometric:biometric:1.1.0"
 
+}
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId 'com.rejowan'
+                artifactId 'ppf'
+                version '1.0'
+                from components.release
+            }
+        }
+    }
 }

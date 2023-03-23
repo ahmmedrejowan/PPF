@@ -2,6 +2,7 @@ package com.rejowan.ppf;
 
 import android.app.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.fragment.app.FragmentActivity;
@@ -11,6 +12,7 @@ public class FingerAuthy {
     Activity activity;
     BiometricPrompt.PromptInfo promptInfo;
     BiometricPrompt biometricPrompt;
+    AuthenticationCallback authenticationCallback;
 
     public FingerAuthy(Activity activity) {
         this.activity = activity;
@@ -43,14 +45,33 @@ public class FingerAuthy {
 
     }
 
-    public void authenticate(BiometricPrompt.AuthenticationCallback authenticationCallback) {
+    public void authenticate(AuthenticationCallback authenticationCallback) {
+        this.authenticationCallback = authenticationCallback;
 
         if (promptInfo == null) {
             throw new NullPointerException("PromptInfo is null. Please call buildBiometricPrompt() first");
         }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-            biometricPrompt = new BiometricPrompt((FragmentActivity) activity, activity.getMainExecutor(), authenticationCallback);
+            biometricPrompt = new BiometricPrompt((FragmentActivity) activity, activity.getMainExecutor(), new BiometricPrompt.AuthenticationCallback() {
+                @Override
+                public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                    super.onAuthenticationError(errorCode, errString);
+                    authenticationCallback.onAuthenticationError();
+                }
+
+                @Override
+                public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                    super.onAuthenticationSucceeded(result);
+                    authenticationCallback.onAuthenticationSucceeded();
+                }
+
+                @Override
+                public void onAuthenticationFailed() {
+                    super.onAuthenticationFailed();
+                    authenticationCallback.onAuthenticationFailed();
+                }
+            });
             biometricPrompt.authenticate(promptInfo);
         }
     }
@@ -60,6 +81,12 @@ public class FingerAuthy {
         if (biometricPrompt != null) {
             biometricPrompt.cancelAuthentication();
         }
+    }
+
+    public interface AuthenticationCallback {
+        void onAuthenticationError();
+        void onAuthenticationSucceeded();
+        void onAuthenticationFailed();
     }
 
 }

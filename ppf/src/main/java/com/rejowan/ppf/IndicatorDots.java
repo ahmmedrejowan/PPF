@@ -44,18 +44,18 @@ public class IndicatorDots extends LinearLayout {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.IndicatorDots);
 
         try {
-            mDiameter = (int) typedArray.getDimension(R.styleable.IndicatorDots_diameter, getDimensionInPx(getContext(), R.dimen.default_dot_diameter));
-            mPadding = (int) typedArray.getDimension(R.styleable.IndicatorDots_padding, getDimensionInPx(getContext(), R.dimen.default_dot_spacing));
-            mFillDrawable = typedArray.getResourceId(R.styleable.IndicatorDots_dotDrawableFilled,
+            mDiameter = (int) typedArray.getDimension(R.styleable.IndicatorDots_ppf_diameter, getDimensionInPx(getContext(), R.dimen.default_dot_diameter));
+            mPadding = (int) typedArray.getDimension(R.styleable.IndicatorDots_ppf_padding, getDimensionInPx(getContext(), R.dimen.default_dot_spacing));
+            mFillDrawable = typedArray.getResourceId(R.styleable.IndicatorDots_ppf_dotDrawableFilled,
                     R.drawable.dot_filled);
-            mEmptyDrawable = typedArray.getResourceId(R.styleable.IndicatorDots_dotDrawableNormal,
+            mEmptyDrawable = typedArray.getResourceId(R.styleable.IndicatorDots_ppf_dotDrawableNormal,
                     R.drawable.dot_empty);
-            mCount = typedArray.getInt(R.styleable.IndicatorDots_count, DEFAULT_PIN_LENGTH);
-            mType = typedArray.getInt(R.styleable.IndicatorDots_type,
+            mCount = typedArray.getInt(R.styleable.IndicatorDots_ppf_count, DEFAULT_PIN_LENGTH);
+            mType = typedArray.getInt(R.styleable.IndicatorDots_ppf_type,
                     IndicatorType.FIXED);
 
-            mDotColorNormal = typedArray.getColor(R.styleable.IndicatorDots_dotColorNormal, 0);
-            mDotColorFilled = typedArray.getColor(R.styleable.IndicatorDots_dotColorFilled, 0);
+            mDotColorNormal = typedArray.getColor(R.styleable.IndicatorDots_ppf_dotColorNormal, 0);
+            mDotColorFilled = typedArray.getColor(R.styleable.IndicatorDots_ppf_dotColorFilled, 0);
         } finally {
             typedArray.recycle();
         }

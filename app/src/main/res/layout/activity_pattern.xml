@@ -13,16 +13,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        app:aspectRatio="match_width"
-        app:dotAnimationDuration="150"
-        app:dotNormalSize="20dp"
-        app:dotSelectedSize="40dp"
-        app:lineEndAnimationDuration="100"
-        app:lineWidth="10dp"
-        app:patternLength="3"
-        app:stateCorrectColor="#4CAF50"
-        app:stateNormalColor="#32b6ce"
-        app:stateWrongColor="#F44336" />
+        app:ppf_aspectRatio="match_width"
+        app:ppf_dotAnimationDuration="150"
+        app:ppf_dotNormalSize="20dp"
+        app:ppf_dotSelectedSize="40dp"
+        app:ppf_lineEndAnimationDuration="100"
+        app:ppf_lineWidth="10dp"
+        app:ppf_patternLength="3"
+        app:ppf_stateCorrectColor="#4CAF50"
+        app:ppf_stateNormalColor="#32b6ce"
+        app:ppf_stateWrongColor="#F44336" />
 
 
 </RelativeLayout>

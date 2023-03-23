@@ -15,9 +15,9 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        app:count="6"
-        app:diameter="30dp"
-        app:padding="10dp" />
+        app:ppf_count="6"
+        app:ppf_diameter="30dp"
+        app:ppf_padding="10dp" />
 
 
     <com.rejowan.ppf.PinLockView
@@ -28,11 +28,11 @@
         android:layout_marginTop="100dp"
         android:paddingBottom="20dp"
         android:background="#32b6ce"
-        app:deleteButtonPressedColor="#FF5722"
-        app:deleteButtonNormalColor="#FFFFFF"
-        app:deleteButtonSize="24dp"
-        app:keyTextSize="20sp"
-        app:pinLength="6" />
+        app:ppf_deleteButtonPressedColor="#FF5722"
+        app:ppf_deleteButtonNormalColor="#FFFFFF"
+        app:ppf_deleteButtonSize="24dp"
+        app:ppf_keyTextSize="20sp"
+        app:ppf_pinLength="6" />
 
 
 </RelativeLayout>

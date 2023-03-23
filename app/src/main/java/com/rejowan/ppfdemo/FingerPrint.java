@@ -1,12 +1,9 @@
 package com.rejowan.ppfdemo;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.biometric.BiometricPrompt;
 
 import com.rejowan.ppf.FingerAuthy;
 import com.rejowan.ppfdemo.databinding.ActivityFingerPrintBinding;
@@ -24,24 +21,21 @@ public class FingerPrint extends AppCompatActivity {
 
 
         FingerAuthy fingerAuthy = new FingerAuthy(this);
-        if (fingerAuthy.hasBiometricSupport()){
-            fingerAuthy.buildBiometricPrompt("Biometric Authentication","Please authenticate to continue","Use your face or fingerprint to authenticate","Cancel");
-            fingerAuthy.authenticate(new BiometricPrompt.AuthenticationCallback() {
+        if (fingerAuthy.hasBiometricSupport()) {
+            fingerAuthy.buildBiometricPrompt("Biometric Authentication", "Please authenticate to continue", "Use your face or fingerprint to authenticate", "Cancel");
+            fingerAuthy.authenticate(new FingerAuthy.AuthenticationCallback() {
                 @Override
-                public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
-                    super.onAuthenticationError(errorCode, errString);
+                public void onAuthenticationError() {
+
                 }
 
                 @Override
-                public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
-                    super.onAuthenticationSucceeded(result);
-                    startActivity(new Intent(FingerPrint.this, Unlocked.class));
+                public void onAuthenticationSucceeded() {
 
                 }
 
                 @Override
                 public void onAuthenticationFailed() {
-                    super.onAuthenticationFailed();
 
                 }
             });

@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="PatternLockView">
-        <attr name="aspectRatio" format="enum">
+        <attr name="ppf_aspectRatio" format="enum">
             <enum name="square" value="0" />
             <enum name="match_width" value="1" />
             <enum name="match_height" value="2" />
         </attr>
-        <attr name="dotAnimationDuration" format="integer" />
-        <attr name="dotNormalSize" format="dimension" />
-        <attr name="dotSelectedSize" format="dimension" />
-        <attr name="lineEndAnimationDuration" format="integer" />
-        <attr name="lineWidth" format="dimension" />
-        <attr name="patternLength" format="integer" />
-        <attr name="stateNormalColor" format="color" />
-        <attr name="stateCorrectColor" format="color" />
-        <attr name="stateWrongColor" format="color" />
+        <attr name="ppf_dotAnimationDuration" format="integer" />
+        <attr name="ppf_dotNormalSize" format="dimension" />
+        <attr name="ppf_dotSelectedSize" format="dimension" />
+        <attr name="ppf_lineEndAnimationDuration" format="integer" />
+        <attr name="ppf_lineWidth" format="dimension" />
+        <attr name="ppf_patternLength" format="integer" />
+        <attr name="ppf_stateNormalColor" format="color" />
+        <attr name="ppf_stateCorrectColor" format="color" />
+        <attr name="ppf_stateWrongColor" format="color" />
     </declare-styleable>
 
 
     <declare-styleable name="PinLockView">
-        <attr name="pinLength" format="integer" />
-        <attr name="deleteButtonDrawable" format="integer" />
-        <attr name="deleteButtonNormalColor" format="color" />
-        <attr name="deleteButtonSize" format="dimension" />
-        <attr name="deleteButtonPressedColor" format="color" />
-        <attr name="keyTextColor" format="color" />
-        <attr name="keyTextSize" format="dimension" />
-        <attr name="keyButtonSize" format="dimension" />
-        <attr name="keyVerticalSpacing" format="dimension" />
-        <attr name="keyHorizontalSpacing" format="dimension" />
-        <attr name="keyBackgroundDrawable" format="integer" />
-        <attr name="showDeleteButton" format="boolean" />
+        <attr name="ppf_pinLength" format="integer" />
+        <attr name="ppf_deleteButtonDrawable" format="integer" />
+        <attr name="ppf_deleteButtonNormalColor" format="color" />
+        <attr name="ppf_deleteButtonSize" format="dimension" />
+        <attr name="ppf_deleteButtonPressedColor" format="color" />
+        <attr name="ppf_keyTextColor" format="color" />
+        <attr name="ppf_keyTextSize" format="dimension" />
+        <attr name="ppf_keyButtonSize" format="dimension" />
+        <attr name="ppf_keyVerticalSpacing" format="dimension" />
+        <attr name="ppf_keyHorizontalSpacing" format="dimension" />
+        <attr name="ppf_keyBackgroundDrawable" format="integer" />
+        <attr name="ppf_showDeleteButton" format="boolean" />
 
     </declare-styleable>
 
 
     <declare-styleable name="IndicatorDots">
-        <attr name="count" format="integer" />
-        <attr name="dotDrawableNormal" format="reference" />
-        <attr name="dotDrawableFilled" format="reference" />
-        <attr name="dotColorNormal" format="color" />
-        <attr name="dotColorFilled" format="color" />
-        <attr name="diameter" format="dimension" />
-        <attr name="padding" format="dimension" />
-        <attr name="type" format="enum">
+        <attr name="ppf_count" format="integer" />
+        <attr name="ppf_dotDrawableNormal" format="reference" />
+        <attr name="ppf_dotDrawableFilled" format="reference" />
+        <attr name="ppf_dotColorNormal" format="color" />
+        <attr name="ppf_dotColorFilled" format="color" />
+        <attr name="ppf_diameter" format="dimension" />
+        <attr name="ppf_padding" format="dimension" />
+        <attr name="ppf_type" format="enum">
             <enum name="fixed" value="0" />
             <enum name="fill" value="1" />
             <enum name="fillWithAnimation" value="2" />

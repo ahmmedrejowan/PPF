@@ -69,7 +69,7 @@ Add this to your app level `build.gradle`:
 dependencies {
 	...
 	     
-	        implementation 'com.github.ahmmedrejowan:PPF:0.0.1'
+	        implementation 'com.github.ahmmedrejowan:PPF:0.1'
 
 
 }

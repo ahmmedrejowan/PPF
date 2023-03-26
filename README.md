@@ -19,6 +19,7 @@ allprojects {
 }
 ```
 
+
 #### New
 If you're using new gradle versions then follow this.
 Add this in your `settings.gradle` file:
